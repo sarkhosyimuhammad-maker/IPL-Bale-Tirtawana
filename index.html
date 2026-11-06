@@ -4,880 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPL Digital - Bale Tirtawana</title>
-    <!-- Tailwind CSS untuk Desain Modern & Responsif -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SheetJS dari CDN Cloudflare untuk Membaca File Excel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#059669', 
-                        secondary: '#0284c7'
-                    }
-                }
-            }
+            theme: { extend: { colors: { primary: '#059669', secondary: '#0284c7' } } }
         }
     </script>
     <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen pb-12">
 
-    <!-- Header Aplikasi -->
     <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-md sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-2">
             <div class="flex items-center space-x-3">
                 <div class="bg-white p-2 rounded-full text-emerald-600 shadow-inner">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://w3.org" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-wide">IPL Bale Tirtawana</h1>
-                    <p class="text-xs text-emerald-100">Layanan Transparansi Data Pembayaran Warga • Gratis</p>
+                    <p class="text-xs text-emerald-100">Transparansi Data Pembayaran Warga • Real-time Otomatis</p>
                 </div>
             </div>
-            <!-- Menu Tab Navigasi -->
-            <div class="flex bg-emerald-700 bg-opacity-50 p-1 rounded-lg mt-2 sm:mt-0">
-                <button id="tab-warga-btn" onclick="switchTab('warga')" class="px-4 py-1.5 rounded-md text-sm font-medium transition-all bg-white text-emerald-700 shadow shadow-sm">
-                    Pencarian Warga
-                </button>
-                <button id="tab-admin-btn" onclick="switchTab('admin')" class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white hover:text-emerald-100">
-                    Panel Admin (Import)
-                </button>
+            <div>
+                <span id="loading-status" class="text-xs bg-emerald-700 px-3 py-1.5 rounded-full font-medium flex items-center gap-1.5">
+                    <span class="animate-pulse h-2 w-2 rounded-full bg-yellow-400"></span>Menghubungkan Database...
+                </span>
             </div>
         </div>
     </header>
 
-    <!-- Konten Utama Bodi -->
-    <main class="max-w-4xl mx-auto px-4 mt-6">
-        
-        <!-- Notifikasi Kustom -->
-        <div id="toast-notification" class="hidden fixed bottom-5 right-5 left-5 sm:left-auto bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between space-x-4 transition-all duration-300 z-50">
-            <span id="toast-message" class="text-sm font-medium">Pesan di sini</span>
-            <button onclick="dismissToast()" class="text-gray-400 hover:text-white font-bold text-lg">&times;</button>
+    <main class="max-w-4xl mx-auto px-4 mt-6 space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <p class="text-xs text-gray-500 font-medium uppercase">Total Blok Terdata</p>
+                <p id="stat-total-warga" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <p class="text-xs text-gray-500 font-medium uppercase">Status Sinkronisasi</p>
+                <p id="stat-update-time" class="text-sm font-semibold text-gray-700 mt-2">Memuat data...</p>
+            </div>
         </div>
 
-        <!-- ==================== TAB 1: PENCARIAN WARGA ==================== -->
-        <section id="section-warga" class="block space-y-4">
-            
-            <!-- Ringkasan Statistik Cepat -->
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Total Blok Terdata</p>
-                    <p id="stat-total-warga" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
-                </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Informasi Pemutakhiran</p>
-                    <p id="stat-update-time" class="text-sm font-semibold text-gray-700 mt-2">Menggunakan Format Berkas Foto</p>
-                </div>
+        <!-- Filter Kluster -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <div class="max-w-md">
+                <h3 class="text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider flex items-center gap-1.5">PILIHAN PER KLUSTER BLOK</h3>
+                <select id="filter-kluster" onchange="aksiPilihKlusterRT(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" disabled>
+                    <option value="">Memuat data kluster...</option>
+                </select>
             </div>
+        </div>
 
-            <!-- 1. PILIHAN PER KLUSTER BLOK (DESAIN BERSIH TANPA TOMBOL & DESKRIPSI TEKS) -->
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                <div class="max-w-md">
-                    <h3 class="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        PILIHAN PER KLUSTER BLOK
-                    </h3>
-                    <select id="filter-kluster" onchange="aksiPilihKlusterRT(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
-                        <!-- Diisi via JS otomatis -->
-                    </select>
-                </div>
+        <!-- Filter Nomor Blok -->
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <div class="max-w-md">
+                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Pilih Nomor Blok Warga</label>
+                <select id="filter-blok" onchange="aksiPilihBlokWarga(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" disabled>
+                    <option value="">-- Pilih Nomor Blok Warga Di Sini --</option>
+                </select>
             </div>
+        </div>
 
-            <!-- 2. PANEL SELEKSI NOMOR BLOK WARGA -->
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                <div class="max-w-md">
-                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        Pilih Nomor Blok Warga
-                    </label>
-                    <select id="filter-blok" onchange="aksiPilihBlokWarga(this)" 
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
-                        <option value="">-- Pilih Nomor Blok Warga Di Sini --</option>
-                    </select>
-                    <p class="text-[11px] text-gray-400 mt-1.5">Pilih salah satu nomor blok di atas untuk langsung memunculkan tabel rincian status pembayaran iuran warga.</p>
-                </div>
-            </div>
-
-        </section>
-
-        <!-- ==================== TAB 2: PANEL ADMIN ==================== -->
-        <section id="section-admin" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
-                <div>
-                    <h2 class="text-lg font-bold text-gray-800">Unggah Berkas Laporan Excel</h2>
-                    <p class="text-xs text-gray-500 mt-0.5">Sistem memproses baris berkas persis seperti screenshot tabel foto Anda secara otomatis.</p>
-                </div>
-
-                <!-- PANDUAN STRUKTUR EXCEL PADA PANEL ADMIN -->
-                <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 space-y-3">
-                    <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wide flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 00-4-4H5m11 0h.01M13 21h4a2 2 0 002-2v-5a2 2 0 00-2-2h-4a2 2 0 00-2 2v5a2 2 0 002 2z" />
-                        </svg>
-                        Struktur Format Kolom Excel Anda Sesuai Foto:
-                    </h4>
-                    
-                    <div class="overflow-x-auto rounded-lg border border-emerald-200 shadow-sm bg-white">
-                        <table class="w-full text-[11px] text-left border-collapse font-sans">
-                            <thead>
-                                <tr class="bg-emerald-600 text-white font-bold border-b border-emerald-200">
-                                    <th class="py-2 px-3 border-r border-emerald-500">Kolom A (No.)</th>
-                                    <th class="py-2 px-3 border-r border-emerald-500">Kolom B (Nama Pelanggan)</th>
-                                    <th class="py-2 px-3 border-r border-emerald-500">Kolom C (Tgl Faktur)</th>
-                                    <th class="py-2 px-3 border-r border-emerald-500">Kolom D (Tgl terima)</th>
-                                    <th class="py-2 px-3">Kolom E (Pembayaran)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 font-mono text-gray-700">
-                                <tr>
-                                    <td class="py-1 px-3 border-r border-gray-100 bg-emerald-50/30">B-001</td>
-                                    <td class="py-1 px-3 border-r border-gray-100 font-sans">Blok B1-1 | Ibu Musyarofah</td>
-                                    <td class="py-1 px-3 border-r border-gray-100">01 Jan 2026</td>
-                                    <td class="py-1 px-3 border-r border-gray-100 text-green-700 font-semibold">09 Jan 2026</td>
-                                    <td class="py-1 px-3 text-green-700 font-semibold">50.000</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-1 px-3 border-r border-gray-100 bg-emerald-50/30">B-001</td>
-                                    <td class="py-1 px-3 border-r border-gray-100 font-sans">Blok B1-1 | Ibu Musyarofah</td>
-                                    <td class="py-1 px-3 border-r border-gray-100">01 Feb 2026</td>
-                                    <td class="py-1 px-3 border-r border-gray-100 text-green-700 font-semibold">06 Mar 2026</td>
-                                    <td class="py-1 px-3 text-green-700 font-semibold">50.000</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Input File Area Drop Zone -->
-                <div class="border-2 border-dashed border-gray-300 hover:border-emerald-500 rounded-xl p-8 transition-colors bg-gray-50 flex flex-col items-center justify-center cursor-pointer relative" id="drop-zone">
-                    <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleExcelImport(event)">
-                    
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                    <span class="text-sm font-semibold text-gray-700">Pilih & Unggah Berkas Excel Laporan Asli (.xlsx)</span>
-                    <span class="text-xs text-gray-400 mt-1">Seret file langsung ke sini tanpa perlu mengubah isi kolomnya</span>
-                </div>
-
-                <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-3">
-                    <div class="text-xs text-gray-500">
-                        Aplikasi berjalan 100% lokal pada browser demi keamanan data iuran warga.
-                    </div>
-                    <button onclick="clearToMockData()" class="px-4 py-2 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors whitespace-nowrap">
-                        Kembalikan ke Contoh Data Berkas Gambar
-                    </button>
-                </div>
-            </div>
-        </section>
+        <!-- Hasil Tabel Rincian -->
+        <div id="container-tabel-hasil" class="hidden bg-white p-5 rounded-xl shadow-sm border border-gray-100 overflow-x-auto custom-scrollbar"></div>
     </main>
 
-    <!-- ==================== MODAL 1: DETAIL INDIVIDU WARGA ==================== -->
-    <div id="detail-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in">
-        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <!-- Header -->
-            <div class="bg-emerald-600 text-white px-5 py-3.5 flex justify-between items-center flex-shrink-0">
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <span id="modal-id-kode" class="bg-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded text-emerald-200">KODE</span>
-                        <p class="text-xs text-emerald-100 font-medium">Bale Tirtawana Histori Laporan IPL</p>
-                    </div>
-                    <h3 id="modal-blok-title" class="text-base font-bold mt-0.5">Nama Blok</h3>
-                </div>
-                <button onclick="closeModal()" class="text-emerald-100 hover:text-white text-xl font-bold p-1">&times;</button>
-            </div>
-            <!-- Filter Tanggal -->
-            <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex-shrink-0">
-                <p class="text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Filter Rentang Waktu Bulan Tagihan:
-                </p>
-                <div class="flex flex-wrap items-center gap-2 bg-white p-2 rounded-xl border border-gray-200">
-                    <div class="flex items-center space-x-1.5">
-                        <span class="text-xs text-gray-500 font-medium">Dari</span>
-                        <input type="date" id="modal-tgl-mulai" onchange="refreshModalTable()"
-                               class="border border-gray-300 rounded px-2 py-0.5 text-xs font-bold font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500 text-gray-700">
-                    </div>
-                    <div class="flex items-center space-x-1.5">
-                        <span class="text-xs text-gray-500 font-medium">s/d</span>
-                        <input type="date" id="modal-tgl-selesai" onchange="refreshModalTable()"
-                               class="border border-gray-300 rounded px-2 py-0.5 text-xs font-bold font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500 text-gray-700">
-                    </div>
-                    <button onclick="resetModalToCurrentYear()" class="text-[10px] text-emerald-600 hover:text-emerald-700 font-bold ml-auto bg-emerald-50 px-2 py-0.5 rounded">
-                        Tahun Ini
-                    </button>
-                </div>
-            </div>
-            <!-- Body Tabel Rapat -->
-            <div class="p-4 overflow-y-auto custom-scrollbar flex-1">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="border-b-2 border-gray-200 text-gray-500 font-bold uppercase tracking-wider text-[11px]">
-                                <th class="py-2 px-2">Bulan Tagihan</th>
-                                <th class="py-2 px-2">Tgl Terima</th>
-                                <th class="py-2 px-2 text-right">Pembayaran</th>
-                                <th class="py-2 px-2 text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="modal-table-rows" class="divide-y divide-gray-100">
-                            <!-- JS Inject -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="modal-empty-rows" class="hidden text-center py-6 text-gray-400 text-xs">
-                    Tidak ada bulan tagihan yang masuk dalam rentang filter tanggal di atas.
-                </div>
-            </div>
-            <!-- Footer -->
-            <div class="bg-gray-50 px-5 py-2.5 text-right border-t border-gray-100 flex-shrink-0">
-                <button onclick="closeModal()" class="px-4 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-semibold rounded-lg transition-colors">
-                    Tutup Tampilan
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== MODAL 2: LAPORAN REKAP KLUSTER PAK RT ==================== -->
-    <div id="kluster-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm animate-fade-in">
-        <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
-            <!-- Header Modal -->
-            <div class="bg-teal-700 text-white px-5 py-3.5 flex justify-between items-center flex-shrink-0">
-                <div>
-                    <h3 class="text-base font-bold flex items-center gap-2">
-                        <span>Laporan Sebaran Kas Lunas Kluster Blok:</span> 
-                        <span id="kluster-title-letter" class="bg-teal-900 px-2.5 py-0.5 rounded text-yellow-300 font-mono font-black text-sm">B</span>
-                    </h3>
-                    <p class="text-[11px] text-teal-100 mt-0.5">Matriks rekapitulasi unit warga berawalan kode huruf terkait secara terpisah</p>
-                </div>
-                <button onclick="tutupLaporanKluster()" class="text-teal-100 hover:text-white text-2xl font-bold p-1">&times;</button>
-            </div>
-            
-            <!-- PANEL SELEKSI PILIHAN BULAN DAN TAHUN YANG DIPISAHKAN -->
-            <div class="bg-gray-100 px-5 py-3 border-b border-gray-200 flex flex-wrap items-center gap-3 flex-shrink-0">
-                <label class="text-xs text-gray-700 font-bold uppercase tracking-wider flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-teal-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Saring Rentang Waktu Laporan:
-                </label>
-                <div class="flex flex-wrap items-center gap-4 bg-white p-2.5 rounded-xl border border-gray-200 shadow-sm">
-                    <!-- RENTANG AWAL (DARI) -->
-                    <div class="flex items-center space-x-1.5 sm:border-r sm:border-gray-200 sm:pr-3">
-                        <span class="text-xs text-gray-500 font-medium">Dari:</span>
-                        <select id="kluster-bulan-mulai" onchange="renderTabelKluster()" class="border border-gray-300 rounded px-2 py-0.5 text-xs font-semibold bg-gray-50 text-gray-700 focus:outline-none focus:ring-1 focus:ring-teal-500">
-                            <option value="01">Januari</option>
-                            <option value="02">Februari</option>
-                            <option value="03">Maret</option>
-                            <option value="04">April</option>
-                            <option value="05">Mei</option>
-                            <option value="06">Juni</option>
-                            <option value="07">Juli</option>
-                            <option value="08">Agustus</option>
-                            <option value="09">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
-                        <select id="kluster-tahun-mulai" onchange="renderTabelKluster()" class="border border-gray-300 rounded px-2 py-0.5 text-xs font-bold text-gray-700 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-teal-500">
-                            <!-- JS Inject -->
-                        </select>
-                    </div>
-                    
-                    <!-- RENTANG AKHIR (S/D) -->
-                    <div class="flex items-center space-x-1.5">
-                        <span class="text-xs text-gray-500 font-medium">s/d:</span>
-                        <select id="kluster-bulan-selesai" onchange="renderTabelKluster()" class="border border-gray-300 rounded px-2 py-0.5 text-xs font-semibold bg-gray-50 text-gray-700 focus:outline-none focus:ring-1 focus:ring-teal-500">
-                            <option value="01">Januari</option>
-                            <option value="02">Februari</option>
-                            <option value="03">Maret</option>
-                            <option value="04">April</option>
-                            <option value="05">Mei</option>
-                            <option value="06">Juni</option>
-                            <option value="07">Juli</option>
-                            <option value="08">Agustus</option>
-                            <option value="09">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
-                        <select id="kluster-tahun-selesai" onchange="renderTabelKluster()" class="border border-gray-300 rounded px-2 py-0.5 text-xs font-bold text-gray-700 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-teal-500">
-                            <!-- JS Inject -->
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tabel Grid Matriks Data Horisontal Bersifat Dinamis -->
-            <div class="p-4 overflow-auto custom-scrollbar flex-1 bg-gray-50">
-                <div class="min-w-[900px] bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <table class="w-full text-left text-[11px] border-collapse">
-                        <thead>
-                            <!-- Header Kolom Bulan Di-generate Dinamis via JS -->
-                        </thead>
-                        <tbody id="kluster-tabel-rows" class="divide-y divide-gray-200">
-                            <!-- Injeksi Baris Kolektif Per Huruf via JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- Footer Modal Kluster -->
-            <div class="bg-gray-100 px-5 py-3 text-right border-t border-gray-200 flex-shrink-0 flex justify-between items-center">
-                <div class="text-[10px] text-gray-500 font-medium">
-                    💡 Keterangan: <span class="text-green-600 font-bold bg-green-50 px-1 rounded">✔ Lunas</span> | <span class="text-red-400 font-bold bg-red-50 px-1 rounded">✘ Belum Bayar</span>
-                </div>
-                <button onclick="tutupLaporanKluster()" class="px-4 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold rounded-lg transition-colors shadow-sm">
-                    Tutup Dokumen Rekap
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== LOGIKA CORE JAVASCRIPT ==================== -->
     <script>
-        const STORAGE_KEY = 'BALE_TIRTAWANA_IPL_STRICTRANGE_DATA';
-        const TIME_KEY = 'BALE_TIRTAWANA_IPL_STRICTRANGE_TIME';
+        const SPREADSHEET_ID = '1_3LZ00GLXsfmp33KwazfBM6-OmLPw1gV';
+        const SHEET_NAME = 'Sheet1'; 
 
-        const screenshotMockData = [
-            {
-                "id_kode": "B-001",
-                "nama_blok": "Blok B1-1 | Ibu Musyarofah",
-                "transaksi_list": [
-                    { "label_bulan": "Januari 2026", "lunas": true, "tgl_terima": "09 Jan 2026", "nominal": 50000, "bulan_idx": "2026-01" },
-                    { "label_bulan": "Februari 2026", "lunas": true, "tgl_terima": "06 Mar 2026", "nominal": 50000, "bulan_idx": "2026-02" },
-                    { "label_bulan": "Maret 2026", "lunas": true, "tgl_terima": "06 Mar 2026", "nominal": 50000, "bulan_idx": "2026-03" },
-                    { "label_bulan": "April 2026", "lunas": true, "tgl_terima": "20 Apr 2026", "nominal": 50000, "bulan_idx": "2026-04" },
-                    { "label_bulan": "Mei 2026", "lunas": true, "tgl_terima": "20 Apr 2026", "nominal": 50000, "bulan_idx": "2026-05" },
-                    { "label_bulan": "Juni 2026", "lunas": true, "tgl_terima": "09 Okt 2026", "nominal": 50000, "bulan_idx": "2026-06" },
-                    { "label_bulan": "Juli 2026", "lunas": true, "tgl_terima": "09 Okt 2026", "nominal": 50000, "bulan_idx": "2026-07" },
-                    { "label_bulan": "Agustus 2026", "lunas": true, "tgl_terima": "09 Okt 2026", "nominal": 50000, "bulan_idx": "2026-08" },
-                    { "label_bulan": "September 2026", "lunas": true, "tgl_terima": "09 Okt 2026", "nominal": 50000, "bulan_idx": "2026-09" },
-                    { "label_bulan": "Oktober 2026", "lunas": true, "tgl_terima": "09 Okt 2026", "nominal": 50000, "bulan_idx": "2026-10" },
-                    { "label_bulan": "November 2026", "lunas": false, "tgl_terima": "-", "nominal": 0, "bulan_idx": "2026-11" },
-                    { "label_bulan": "Desember 2026", "lunas": false, "tgl_terima": "-", "nominal": 0, "bulan_idx": "2026-12" }
-                ]
-            },
-            {
-                "id_kode": "B-002",
-                "nama_blok": "Blok B1-2 | Ibu Syafrina",
-                "transaksi_list": [
-                    { "label_bulan": "Januari 2026", "lunas": true, "tgl_terima": "14 Jan 2026", "nominal": 50000, "bulan_idx": "2026-01" },
-                    { "label_bulan": "Februari 2026", "lunas": true, "tgl_terima": "14 Jan 2026", "nominal": 50000, "bulan_idx": "2026-02" },
-                    { "label_bulan": "Maret 2026", "lunas": true, "tgl_terima": "27 Mar 2026", "nominal": 50000, "bulan_idx": "2026-03" },
-                    { "label_bulan": "April 2026", "lunas": true, "tgl_terima": "27 Mar 2026", "nominal": 50000, "bulan_idx": "2026-04" },
-                    { "label_bulan": "Mei 2026", "lunas": true, "tgl_terima": "10 Jun 2026", "nominal": 50000, "bulan_idx": "2026-05" },
-                    { "label_bulan": "Juni 2026", "lunas": true, "tgl_terima": "10 Jun 2026", "nominal": 50000, "bulan_idx": "2026-06" },
-                    { "label_bulan": "Juli 2026", "lunas": true, "tgl_terima": "05 Sep 2026", "nominal": 50000, "bulan_idx": "2026-07" },
-                    { "label_bulan": "Agustus 2026", "lunas": true, "tgl_terima": "05 Sep 2026", "nominal": 50000, "bulan_idx": "2026-08" },
-                    { "label_bulan": "September 2026", "lunas": true, "tgl_terima": "15 Okt 2026", "nominal": 50000, "bulan_idx": "2026-09" },
-                    { "label_bulan": "Oktober 2026", "lunas": true, "tgl_terima": "15 Okt 2026", "nominal": 50000, "bulan_idx": "2026-10" },
-                    { "label_bulan": "November 2026", "lunas": false, "tgl_terima": "-", "nominal": 0, "bulan_idx": "2026-11" },
-                    { "label_bulan": "Desember 2026", "lunas": false, "tgl_terima": "-", "nominal": 0, "bulan_idx": "2026-12" }
-                ]
-            }
-        ];
+        let formatWargaTerstruktur = {};
+        let daftarKluster = new Set();
 
-        let databaseBlokMaster = [];
-        let blokAktifDiModal = null; 
-
-        window.onload = function() {
-            loadDatabase();
-            initDropdownBlok();
-            initDropdownKluster(); 
-            updateStats();
-        };
-
-        function loadDatabase() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try { databaseBlokMaster = JSON.parse(saved); } catch(e) { databaseBlokMaster = [...screenshotMockData]; }
-            } else {
-                databaseBlokMaster = [...screenshotMockData];
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(databaseBlokMaster));
-                localStorage.setItem(TIME_KEY, "Data Terintegrasi Kluster Pak RT");
-            }
-        }
-
-        function initDropdownBlok() {
-            const select = document.getElementById('filter-blok');
-            select.innerHTML = '<option value="">-- Pilih Nomor Blok Warga Di Sini --</option>';
-            databaseBlokMaster.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.id_kode;
-                opt.textContent = `${item.id_kode} - ${item.nama_blok}`;
-                select.appendChild(opt);
-            });
-        }
-
-        function initDropdownKluster() {
-            const select = document.getElementById('filter-kluster');
-            select.innerHTML = '<option value="">-- Pilih Kluster Huruf Di Sini (Misal: B) --</option>';
+        window.addEventListener('DOMContentLoaded', () => {
+            const url = `https://google.com{SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
             
-            let setPrefix = new Set();
-            databaseBlokMaster.forEach(item => {
-                if (item.id_kode && item.id_kode.length > 0) {
-                    const hurufDepan = item.id_kode.charAt(0).toUpperCase();
-                    setPrefix.add(hurufDepan);
+            fetch(url)
+                .then(res => res.text())
+                .then(data => {
+                    const jsonString = data.substring(data.indexOf("{"), data.lastIndexOf("}") + 1);
+                    const jsonData = JSON.parse(jsonString);
+                    restrukturisasiData(jsonData.table);
+                })
+                .catch(err => {
+                    document.getElementById('loading-status').innerHTML = `<span class="h-2 w-2 rounded-full bg-red-500"></span> Gagal Terhubung`;
+                    document.getElementById('stat-update-time').innerText = "Periksa Akses Berbagi Google Sheets";
+                });
+        });
+
+        function restrukturisasiData(tabel) {
+            if (!tabel || !tabel.rows.length) return;
+
+            tabel.rows.forEach(row => {
+                if (!row.c || row.c.length < 5) return;
+
+                const noBlok = row.c[0] ? String(row.c[0].v).trim() : "";
+                let namaWarga = row.c[1] ? String(row.c[1].v).trim() : "-";
+                if(namaWarga.includes("|")) {
+                    namaWarga = namaWarga.split("|")[1].trim();
+                }
+
+                const teksBulanRaw = row.c[2] ? String(row.c[2].v).trim() : ""; 
+                const tglBayar = row.c[3] ? String(row.c[3].f || row.c[3].v).trim() : "-";
+                const jumlahBayar = row.c[4] ? parseFloat(row.c[4].v) : 0;
+
+                if (!noBlok || noBlok === "Blok") return; 
+
+                const hurufKluster = noBlok.charAt(0).toUpperCase();
+                if(/[A-Z]/.test(hurufKluster)) daftarKluster.add(hurufKluster);
+
+                if (!formatWargaTerstruktur[noBlok]) {
+                    formatWargaTerstruktur[noBlok] = {
+                        idBlok: noBlok,
+                        nama: namaWarga,
+                        catatanIuran: {}
+                    };
+                }
+
+                if(teksBulanRaw) {
+                    const pecahan = teksBulanRaw.split(" ");
+                    const kataBulan = pecahan.length > 1 ? pecahan[1].toLowerCase() : teksBulanRaw.toLowerCase();
+                    
+                    formatWargaTerstruktur[noBlok].catatanIuran[kataBulan] = {
+                        jumlah: jumlahBayar,
+                        tanggal: tglBayar
+                    };
                 }
             });
-            
-            Array.from(setPrefix).sort().forEach(prefix => {
-                const opt = document.createElement('option');
-                opt.value = prefix;
-                opt.textContent = `Kluster Blok / Prefix "${prefix}"`;
-                select.appendChild(opt);
+
+            const totalRumah = Object.keys(formatWargaTerstruktur).length;
+            document.getElementById('stat-total-warga').innerText = totalRumah;
+            document.getElementById('stat-update-time').innerText = `Otomatis Online (${new Date().toLocaleTimeString('id-ID')} WIB)`;
+            document.getElementById('loading-status').innerHTML = `<span class="h-2 w-2 rounded-full bg-emerald-400"></span> Database Aktif`;
+
+            const selectKluster = document.getElementById('filter-kluster');
+            selectKluster.innerHTML = `<option value="">-- Pilih Kluster Huruf Di Sini (Misal: R) --</option>`;
+            Array.from(daftarKluster).sort().forEach(k => {
+                selectKluster.innerHTML += `<option value="${k}">Kluster ${k}</option>`;
             });
+            selectKluster.disabled = false;
         }
 
-        function updateStats() {
-            document.getElementById('stat-total-warga').textContent = databaseBlokMaster.length;
-            document.getElementById('stat-update-time').textContent = localStorage.getItem(TIME_KEY) || "Baru saja diperbarui";
+        function aksiPilihKlusterRT(element) {
+            const huruf = element.value;
+            const selectBlok = document.getElementById('filter-blok');
+            document.getElementById('container-tabel-hasil').className = "hidden";
+            selectBlok.innerHTML = `<option value="">-- Pilih Nomor Blok Warga Di Sini --</option>`;
+
+            if (!huruf) { selectBlok.disabled = true; return; }
+
+            const urutanBlok = Object.keys(formatWargaTerstruktur)
+                .filter(b => b.toUpperCase().startsWith(huruf))
+                .sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}));
+
+            urutanBlok.forEach(b => {
+                const warga = formatWargaTerstruktur[b];
+                selectBlok.innerHTML += `<option value="${b}">${b} | ${warga.nama}</option>`;
+            });
+            selectBlok.disabled = false;
         }
 
         function aksiPilihBlokWarga(element) {
-            const idKode = element.value;
-            if (!idKode) return;
-
-            const wargaTerpilih = databaseBlokMaster.find(item => item.id_kode === idKode);
-            if (wargaTerpilih) {
-                bukaModalDetail(wargaTerpilih);
-            }
-            element.value = "";
-        }
-
-        // FUNGSI AKSI BARU PADA SAAT PAK RT MEMILIH KLUSTER HURUF (LANGSUNG MEMBUKA MODAL OTOMATIS)
-        function aksiPilihKlusterRT(element) {
-            const prefix = element.value;
-            if (!prefix) return;
-
-            // Panggil mesin pembuat data modal kluster
-            bukaLaporanKlusterCerdas(prefix);
-            
-            // Kembalikan seleksi select ke teks awal agar bisa dipilih ulang dengan nyaman
-            element.value = "";
-        }
-
-        function bukaModalDetail(item) {
-            blokAktifDiModal = item;
-            document.getElementById('modal-id-kode').textContent = `ID KODE: ${item.id_kode}`;
-            document.getElementById('modal-blok-title').textContent = item.nama_blok;
-
-            const tahunSekarang = new Date().getFullYear(); 
-            document.getElementById('modal-tgl-mulai').value = `${tahunSekarang}-01-01`;
-            document.getElementById('modal-tgl-selesai').value = `${tahunSekarang}-12-31`;
-
-            refreshModalTable();
-            document.getElementById('detail-modal').classList.remove('hidden');
-        }
-
-        function resetModalToCurrentYear() {
-            const tahunSekarang = new Date().getFullYear();
-            document.getElementById('modal-tgl-mulai').value = `${tahunSekarang}-01-01`;
-            document.getElementById('modal-tgl-selesai').value = `${tahunSekarang}-12-31`;
-            refreshModalTable();
-        }
-
-        function formatRupiah(angka) {
-            if (angka === undefined || angka === null || angka === 0) return "0";
-            return Number(angka).toLocaleString('id-ID');
-        }
-
-        function refreshModalTable() {
-            if (!blokAktifDiModal) return;
-
-            const tbody = document.getElementById('modal-table-rows');
-            const emptyState = document.getElementById('modal-empty-rows');
-            tbody.innerHTML = '';
-
-            const tglMulaiStr = document.getElementById('modal-tgl-mulai').value;
-            const tglSelesaiStr = document.getElementById('modal-tgl-selesai').value;
-
-            if (!tglMulaiStr || !tglSelesaiStr) {
-                emptyState.classList.remove('hidden');
-                return;
-            }
-
-            const startYearMonth = tglMulaiStr.substring(0, 7);
-            const endYearMonth = tglSelesaiStr.substring(0, 7);
-            let barisTercetak = 0;
-
-            blokAktifDiModal.transaksi_list.forEach(tx => {
-                const idxBulanTx = tx.bulan_idx; 
-
-                if (idxBulanTx < startYearMonth || idxBulanTx > endYearMonth) {
-                    return; 
-                }
-
-                barisTercetak++;
-                const tr = document.createElement('tr');
-                tr.className = tx.lunas ? "hover:bg-gray-50 bg-green-50/20 text-gray-900 text-xs" : "hover:bg-gray-50 text-gray-400 bg-gray-50/10 text-xs";
-
-                tr.innerHTML = `
-                    <td class="py-1.5 px-2 font-medium ${tx.lunas ? 'text-gray-900 font-semibold' : 'text-gray-400'}">${tx.label_bulan}</td>
-                    <td class="py-1.5 px-2 font-mono ${tx.lunas ? 'text-gray-700 font-semibold' : 'text-gray-400'}">${tx.tgl_terima}</td>
-                    <td class="py-1.5 px-2 text-right font-mono font-semibold ${tx.lunas ? 'text-emerald-700' : 'text-gray-400'}">
-                        ${formatRupiah(tx.nominal)}
-                    </td>
-                    <td class="py-1.5 px-2 text-center">
-                        ${tx.lunas ? 
-                            `<span class="bg-green-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm tracking-wide">LUNAS</span>` : 
-                            `<span class="bg-gray-200 text-gray-400 text-[9px] font-bold px-1.5 py-0.5 rounded tracking-wide">BELUM BAYAR</span>`
-                        }
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            if (barisTercetak === 0) {
-                emptyState.classList.remove('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('detail-modal').classList.add('hidden');
-            blokAktifDiModal = null;
-        }
-
-        // LOGIKA CORE INTERNAL: INTEGRASI PROSES PANGGIL MODAL REKAPITULASI KLUSTER SECARA OTOMATIS
-        function bukaLaporanKlusterCerdas(prefix) {
-            document.getElementById('kluster-title-letter').textContent = prefix;
-
-            let setTahun = new Set();
-            databaseBlokMaster.forEach(item => {
-                if (item.id_kode.toUpperCase().startsWith(prefix)) {
-                    item.transaksi_list.forEach(tx => {
-                        if (tx.bulan_idx) {
-                            setTahun.add(tx.bulan_idx.split("-")[0]);
-                        }
-                    });
-                }
-            });
-
-            const tahunSekarangString = new Date().getFullYear().toString();
-            const tahunSekarangInt = new Date().getFullYear();
-            
-            setTahun.add((tahunSekarangInt - 1).toString()); 
-            setTahun.add(tahunSekarangString);               
-            setTahun.add((tahunSekarangInt + 1).toString()); 
-            setTahun.add((tahunSekarangInt + 2).toString()); 
-
-            const daftarTahunUrut = Array.from(setTahun).sort();
-
-            const selectThnMulai = document.getElementById('kluster-tahun-mulai');
-            const selectThnSelesai = document.getElementById('kluster-tahun-selesai');
-            
-            selectThnMulai.innerHTML = '';
-            selectThnSelesai.innerHTML = '';
-
-            daftarTahunUrut.forEach(thn => {
-                const opt1 = document.createElement('option');
-                opt1.value = thn;
-                opt1.textContent = thn;
-                selectThnMulai.appendChild(opt1);
-
-                const opt2 = document.createElement('option');
-                opt2.value = thn;
-                opt2.textContent = thn;
-                selectThnSelesai.appendChild(opt2);
-            });
-
-            document.getElementById('kluster-bulan-mulai').value = "01";
-            selectThnMulai.value = tahunSekarangString;
-            document.getElementById('kluster-bulan-selesai').value = "12";
-            selectThnSelesai.value = tahunSekarangString;
-
-            // Set filter kluster master global agar tabel terelasi sempurna saat di-render
-            document.getElementById('filter-kluster').value = prefix;
-
-            renderTabelKluster();
-            document.getElementById('kluster-modal').classList.remove('hidden');
-            
-            // Kembalikan dropdown kluster beranda ke keadaan kosong agar siap digunakan kembali
-            document.getElementById('filter-kluster').value = "";
-        }
-
-        function tutupLaporanKluster() {
-            document.getElementById('kluster-modal').classList.add('hidden');
-        }
-
-        const urutanBulanNama = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        const singkatanBulanNama = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-
-        function renderTabelKluster() {
-            // Baca kode huruf dari judul modal aktif yang sedang berjalan sebagai acuan stateful
-            const prefix = document.getElementById('kluster-title-letter').textContent;
-            
-            const startM = document.getElementById('kluster-bulan-mulai').value;
-            const startY = document.getElementById('kluster-tahun-mulai').value;
-            const endM = document.getElementById('kluster-bulan-selesai').value;
-            const endY = document.getElementById('kluster-tahun-selesai').value;
-
-            const startVal = `${startY}-${startM}`;
-            const endVal = `${endY}-${endM}`;
-            
-            const thead = document.querySelector('#kluster-modal table thead');
-            const tbody = document.getElementById('kluster-tabel-rows');
-            
-            tbody.innerHTML = '';
-            thead.innerHTML = '';
-
-            if (startVal > endVal) {
-                tbody.innerHTML = `<tr><td colspan="3" class="py-6 text-center text-gray-400 text-xs bg-white">Rentang bulan tidak valid atau terbalik. Pilihan 'Dari' harus mendahului 's/d'.</td></tr>`;
-                return;
-            }
-
-            let urutanBulanDinamis = [];
-            let tanggalBerjalan = new Date(startY, parseInt(startM) - 1, 1);
-            let tanggalAkhir = new Date(endY, parseInt(endM) - 1, 1);
-
-            while (tanggalBerjalan <= tanggalAkhir) {
-                let thn = tanggalBerjalan.getFullYear();
-                let blnIdx = (tanggalBerjalan.getMonth() + 1).toString().padStart(2, '0');
-                let stringIdx = `${thn}-${blnIdx}`;
-                
-                urutanBulanDinamis.push({
-                    idx: stringIdx,
-                    labelSingkat: `${singkatanBulanNama[tanggalBerjalan.getMonth()]} ${thn.toString().substring(2)}`,
-                    labelFull: `${urutanBulanNama[tanggalBerjalan.getMonth()]} ${thn}`
-                });
-
-                tanggalBerjalan.setMonth(tanggalBerjalan.getMonth() + 1);
-            }
-
-            let headerHtml = `
-                <tr class="bg-gray-100 border-b border-gray-200 text-gray-700 font-bold text-center uppercase tracking-wider">
-                    <th class="py-2.5 px-2 border-r border-gray-200 sticky left-0 bg-gray-100 z-10 w-16 text-center shadow-sm">Kode</th>
-                    <th class="py-2.5 px-2 border-r border-gray-200 sticky left-16 bg-gray-100 z-10 w-44 text-left shadow-sm">Nama Blok Pelanggan</th>
-            `;
-            
-            urutanBulanDinamis.forEach(b => {
-                headerHtml += `<th class="py-2.5 px-1 border-r border-gray-200 min-w-[65px] text-center text-[10px]">${b.labelSingkat}</th>`;
-            });
-            
-            headerHtml += `
-                    <th class="py-2.5 px-2 bg-emerald-50 text-emerald-800 font-extrabold w-16">Total</th>
-                </tr>
-            `;
-            thead.innerHTML = headerHtml;
-
-            const filteredUnits = databaseBlokMaster.filter(item => item.id_kode.toUpperCase().startsWith(prefix));
-            filteredUnits.sort((a, b) => a.id_kode.localeCompare(b.id_kode));
-
-            if (filteredUnits.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="${urutanBulanDinamis.length + 3}" class="py-6 text-center text-gray-400 text-xs bg-white">Tidak ada data unit dengan kode awalan "${prefix}".</td></tr>`;
-                return;
-            }
-
-            filteredUnits.forEach(unit => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50 text-gray-700 bg-white border-b border-gray-100 text-center text-xs";
-
-                let rowHtml = `
-                    <td class="py-2 px-1 border-r border-gray-200 text-center font-mono font-bold bg-gray-100 sticky left-0 z-10 shadow-sm">${unit.id_kode}</td>
-                    <td class="py-2 px-2 border-r border-gray-200 text-left font-bold bg-white sticky left-16 z-10 shadow-sm max-w-[176px] truncate" title="${unit.nama_blok}">${unit.nama_blok}</td>
-                `;
-
-                let lunasCount = 0;
-
-                urutanBulanDinamis.forEach(b => {
-                    const matchTx = unit.transaksi_list.find(tx => tx.bulan_idx === b.idx);
-
-                    if (matchTx && matchTx.lunas) {
-                        lunasCount++;
-                        rowHtml += `<td class="py-2 px-0.5 border-r border-gray-100 bg-green-50/20 text-green-600 font-extrabold" title="${b.labelFull}: Lunas Rp ${formatRupiah(matchTx.nominal)} pada ${matchTx.tgl_terima}">✔</td>`;
-                    } else {
-                        rowHtml += `<td class="py-2 px-0.5 border-r border-gray-100 bg-red-50/5 text-red-400 font-medium">✘</td>`;
-                    }
-                });
-
-                rowHtml += `<td class="py-2 px-1 text-center font-bold bg-emerald-50 text-emerald-800">${lunasCount}/${urutanBulanDinamis.length}</td>`;
-                tr.innerHTML = rowHtml;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function switchTab(target) {
-            const btnWarga = document.getElementById('tab-warga-btn');
-            const btnAdmin = document.getElementById('tab-admin-btn');
-            const secWarga = document.getElementById('section-warga');
-            const secAdmin = document.getElementById('section-admin');
-
-            if (target === 'warga') {
-                btnWarga.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all bg-white text-emerald-700 shadow shadow-sm";
-                btnAdmin.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white hover:text-emerald-100";
-                secWarga.classList.remove('hidden');
-                secAdmin.classList.add('hidden');
-            } else {
-                btnAdmin.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all bg-white text-emerald-700 shadow shadow-sm";
-                btnWarga.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white hover:text-emerald-100";
-                secAdmin.classList.remove('hidden');
-                secWarga.classList.add('hidden');
-            }
-        }
-
-        function handleExcelImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    
-                    const cells = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
-                    let petaBlokWarga = {};
-
-                    for (let r = 0; r < cells.length; r++) {
-                        const rowData = cells[r];
-                        if (!rowData || rowData.length === 0) continue;
-
-                        const colA_Kode  = rowData[0] ? rowData[0].toString().trim() : ""; 
-                        const colB_Blok  = rowData[1] ? rowData[1].toString().trim() : ""; 
-                        const colC_Bulan = rowData[2] ? rowData[2].toString().trim() : ""; 
-                        const colD_Terima = rowData[3] ? rowData[3].toString().trim() : ""; 
-                        const colE_Bayar  = rowData[4] ? rowData[4].toString().trim() : ""; 
-
-                        if (!colA_Kode || !colC_Bulan) continue;
-                        if (colC_Bulan.toLowerCase().includes("faktur") || colA_Kode.toLowerCase().includes("no")) continue;
-
-                        if (!petaBlokWarga[colA_Kode]) {
-                            petaBlokWarga[colA_Kode] = {
-                                "id_kode": colA_Kode,
-                                "nama_blok": colB_Blok || `Blok ${colA_Kode}`,
-                                "transaksi_list": []
-                            };
-                        }
-
-                        const parts = colC_Bulan.split(" ");
-                        let bulanLabelPanjang = colC_Bulan;
-                        let idxBulanMulai = "2026-01";
-                        
-                        if (parts.length >= 3) {
-                            const blnKecKecil = parts[1].toLowerCase();
-                            const namaBulanReal = pemetaanBulanNama[blnKecKecil] || parts[1];
-                            const angkaBulanReal = pemetaanBulanAngka[blnKecKecil] || "01";
-                            
-                            bulanLabelPanjang = `${namaBulanReal} ${parts[2]}`;
-                            idxBulanMulai = `${parts[2]}-${angkaBulanReal}`; 
-                        }
-
-                        let statusLunas = false;
-                        let tglTerimaFinal = "-";
-                        let uangRupiah = 0;
-
-                        if (colE_Bayar) {
-                            let cleanNum = colE_Bayar.toString().replace(/\./g, '').replace(/,/g, '.');
-                            uangRupiah = parseFloat(cleanNum) || 0;
-                        }
-
-                        if (uangRupiah > 0 && colD_Terima !== "") {
-                            statusLunas = true;
-                            tglTerimaFinal = colD_Terima;
-                        }
-
-                        petaBlokWarga[colA_Kode].transaksi_list.push({
-                            "label_bulan": bulanLabelPanjang,
-                            "lunas": statusLunas,
-                            "tgl_terima": tglTerimaFinal,
-                            "nominal": uangRupiah,
-                            "bulan_idx": idxBulanMulai
-                        });
-                    }
-
-                    let listHasilFinal = Object.values(petaBlokWarga);
-
-                    if (listHasilFinal.length === 0) {
-                        showToast("Format baris Excel tidak valid.", true);
-                        return;
-                    }
-
-                    databaseBlokMaster = listHasilFinal;
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(databaseBlokMaster));
-                    
-                    const d = new Date();
-                    const formattedTime = `Diupdate: ${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()} Pukul ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} WIB`;
-                    localStorage.setItem(TIME_KEY, formattedTime);
-
-                    initDropdownBlok();
-                    initDropdownKluster(); 
-                    updateStats();
-                    showToast(`Sukses memuat ${databaseBlokMaster.length} blok warga!`);
-                    
-                } catch(err) {
-                    console.error(err);
-                    showToast("Gagal memproses berkas laporan.", true);
-                }
-            };
-            reader.readAsArrayBuffer(file);
-            event.target.value = "";
-        }
-
-        function clearToMockData() {
-            if(confirm("Apakah ingin memulihkan ke data simulasi nominal kas awal?")) {
-                localStorage.removeItem(STORAGE_KEY);
-                localStorage.removeItem(TIME_KEY);
-                loadDatabase();
-                initDropdownBlok();
-                initDropdownKluster();
-                updateStats();
-                showToast("Berhasil memulihkan ke data simulasi.");
-            }
-        }
-
-        const pemetaanBulanNama = {
-            "jan": "Januari", "feb": "Februari", "mar": "Maret", "apr": "April", "mei": "Mei", "jun": "Juni",
-            "jul": "Juli", "agu": "Agustus", "sep": "September", "okt": "Oktober", "nop": "November", "nov": "November", "des": "Desember"
-        };
-        const pemetaanBulanAngka = {
-            "jan": "01", "feb": "02", "mar": "03", "apr": "04", "mei": "05", "jun": "06",
-            "jul": "07", "agu": "08", "sep": "09", "okt": "10", "nop": "11", "nov": "11", "des": "12"
-        };
-
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast-notification');
-            const msg = document.getElementById('toast-message');
-            msg.textContent = message;
-            if (isError) {
-                toast.className = "fixed bottom-5 right-5 left-5 sm:left-auto bg-red-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between space-x-4 transition-all duration-300 z-50";
-            } else {
-                toast.className = "fixed bottom-5 right-5 left-5 sm:left-auto bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between space-x-4 transition-all duration-300 z-50";
-            }
-            toast.classList.remove('hidden');
-            setTimeout(() => { toast.classList.add('hidden'); }, 4000);
-        }
-
-        function dismissToast() {
-            document.getElementById('toast-notification').classList.add('hidden');
-        }
-    </script>
-</body>
-</html>
+            const noBlok = element.value;
+            const containerTabel = document.getElementById('container-tabel-hasil');
+            if (!noBlok) { containerTabel.className = "hidden"; return; }
+
+            const warga = formatWargaTerstruktur[noBlok];
+            const listBulanIndo = [
+                { key: 'jan', nama: 'Januari' }, { key: 'feb', nama: 'Februari' }, { key: 'mar', nama: 'Maret' },
+                { key: 'apr', nama: 'April' }, { key: 'mei', nama: 'Mei' }, { key: 'jun', nama: 'Juni' },
+                { key: 'jul', nama: 'Juli' }, { key: 'agu', nama: 'Agustus' }, { key: 'sep', nama: 'September' },
+                { key: 'okt', nama: 'Oktober' }, { key: 'nop', nama: 'November' }, { key: 'des', nama: 'Desember' }
+            ];
+
+            let html = `
+                <div class="mb-4 border-b border-gray-100 pb-3">
+                    <h3 class="text-sm font-bold text-gray-800">Status Iuran IPL: <span class="text-emerald-600">${warga.idBlok}</span></h3>
