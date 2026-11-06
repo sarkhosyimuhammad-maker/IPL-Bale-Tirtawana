@@ -79,7 +79,7 @@
         const SPREADSHEET_ID = '1_3LZ00GLXsfmp33KwazfBM6-OmLPw1gV';
         const SHEET_NAME = 'Sheet1'; 
 
-        let formatWargaTerstruktur = {};
+        let formatWargaTerstructured = {};
         let daftarKluster = new Set();
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -102,25 +102,22 @@
             if (!tabel || !tabel.rows.length) return;
 
             tabel.rows.forEach(row => {
-                if (!row.c || row.c.length < 5) return;
+                if (!row.c || row.c.length < 3) return;
 
                 const noBlok = row.c[0] ? String(row.c[0].v).trim() : "";
                 let namaWarga = row.c[1] ? String(row.c[1].v).trim() : "-";
-                if(namaWarga.includes("|")) {
-                    namaWarga = namaWarga.split("|")[1].trim();
-                }
-
+                
                 const teksBulanRaw = row.c[2] ? String(row.c[2].v).trim() : ""; 
                 const tglBayar = row.c[3] ? String(row.c[3].f || row.c[3].v).trim() : "-";
                 const jumlahBayar = row.c[4] ? parseFloat(row.c[4].v) : 0;
 
-                if (!noBlok || noBlok === "Blok") return; 
+                if (!noBlok || noBlok.toLowerCase() === "blok") return; 
 
                 const hurufKluster = noBlok.charAt(0).toUpperCase();
                 if(/[A-Z]/.test(hurufKluster)) daftarKluster.add(hurufKluster);
 
-                if (!formatWargaTerstruktur[noBlok]) {
-                    formatWargaTerstruktur[noBlok] = {
+                if (!formatWargaTerstructured[noBlok]) {
+                    formatWargaTerstructured[noBlok] = {
                         idBlok: noBlok,
                         nama: namaWarga,
                         catatanIuran: {}
@@ -131,14 +128,14 @@
                     const pecahan = teksBulanRaw.split(" ");
                     const kataBulan = pecahan.length > 1 ? pecahan[1].toLowerCase() : teksBulanRaw.toLowerCase();
                     
-                    formatWargaTerstruktur[noBlok].catatanIuran[kataBulan] = {
+                    formatWargaTerstructured[noBlok].catatanIuran[kataBulan] = {
                         jumlah: jumlahBayar,
                         tanggal: tglBayar
                     };
                 }
             });
 
-            const totalRumah = Object.keys(formatWargaTerstruktur).length;
+            const totalRumah = Object.keys(formatWargaTerstructured).length;
             document.getElementById('stat-total-warga').innerText = totalRumah;
             document.getElementById('stat-update-time').innerText = `Otomatis Online (${new Date().toLocaleTimeString('id-ID')} WIB)`;
             document.getElementById('loading-status').innerHTML = `<span class="h-2 w-2 rounded-full bg-emerald-400"></span> Database Aktif`;
@@ -159,12 +156,12 @@
 
             if (!huruf) { selectBlok.disabled = true; return; }
 
-            const urutanBlok = Object.keys(formatWargaTerstruktur)
+            const urutanBlok = Object.keys(formatWargaTerstructured)
                 .filter(b => b.toUpperCase().startsWith(huruf))
                 .sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}));
 
             urutanBlok.forEach(b => {
-                const warga = formatWargaTerstruktur[b];
+                const warga = formatWargaTerstructured[b];
                 selectBlok.innerHTML += `<option value="${b}">${b} | ${warga.nama}</option>`;
             });
             selectBlok.disabled = false;
@@ -175,7 +172,7 @@
             const containerTabel = document.getElementById('container-tabel-hasil');
             if (!noBlok) { containerTabel.className = "hidden"; return; }
 
-            const warga = formatWargaTerstruktur[noBlok];
+            const warga = formatWargaTerstructured[noBlok];
             const listBulanIndo = [
                 { key: 'jan', nama: 'Januari' }, { key: 'feb', nama: 'Februari' }, { key: 'mar', nama: 'Maret' },
                 { key: 'apr', nama: 'April' }, { key: 'mei', nama: 'Mei' }, { key: 'jun', nama: 'Juni' },
@@ -186,3 +183,5 @@
             let html = `
                 <div class="mb-4 border-b border-gray-100 pb-3">
                     <h3 class="text-sm font-bold text-gray-800">Status Iuran IPL: <span class="text-emerald-600">${warga.idBlok}</span></h3>
+                    <p class="text-xs text-gray-500 mt-0.5">Pemilik/Penghuni: <span class="font-semibold text-gray-700">${warga.nama}</span></p>
+                </div>
