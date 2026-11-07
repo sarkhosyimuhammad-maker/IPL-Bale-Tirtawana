@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPL Digital Realtime - Bale Tirtawana</title>
+    
+    <!-- ==================================================================================== -->
+    // 💡 KOTAK EMAS: TEMPAT MEMASUKKAN LINK GOOGLE SHEETS ANDA (SANGAT MUDAH DICARI)
+    // Silakan ganti teks "" di bawah ini dengan tautan panjang berakhiran output=csv Anda!
+    // ====================================================================================
+    <script>
+        const DEFAULT_SHEETS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT2t-ise09YdP7oo9IkOW-tDO2CHVKIrbM7zDPyO7USWUgY2q380DqKWslxZW_mJA/pub?output=csv"; 
+    </script>
+
     <!-- Tailwind CSS untuk Desain Modern & Responsif -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -37,7 +46,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen pb-12">
 
-    <!-- Header Aplikasi -->
+    <!-- Header Utama Aplikasi -->
     <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-md sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-2">
             <div class="flex items-center space-x-3">
@@ -343,16 +352,9 @@
         let blokAktifDiModal = null;
 
         window.onload = function() {
-            // =========================================================================
-            // 💡 TEMPAT MENARUH LINK EMAS GOOGLE SHEETS ANDA AGAR KONEK OTOMATIS DI HP WARGA:
-            // Salin dan Tempel Link Panjang .csv Anda di dalam tanda kutip di bawah ini!
-            // =========================================================================
-            const DEFAULT_SHEETS_URL = ""; 
-
             let savedUrl = localStorage.getItem(SHEETS_URL_KEY);
             
-            // Aturan paksa sinkronisasi cache:
-            if (DEFAULT_SHEETS_URL !== "") {
+            if (typeof DEFAULT_SHEETS_URL !== "undefined" && DEFAULT_SHEETS_URL !== "") {
                 if (!savedUrl || savedUrl !== DEFAULT_SHEETS_URL) {
                     localStorage.clear(); 
                     localStorage.setItem(SHEETS_URL_KEY, DEFAULT_SHEETS_URL);
