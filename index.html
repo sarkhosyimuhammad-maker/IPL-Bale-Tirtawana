@@ -44,7 +44,7 @@
 
     <!-- Header Utama Aplikasi -->
     <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-md sticky top-0 z-40">
-        <div class="max-w-6xl mx-auto px-3 py-3 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div class="max-w-6xl mx-auto px-3 py-3 flex justify-between items-center gap-2">
             <div class="flex items-center space-x-2.5">
                 <div class="bg-white p-1.5 rounded-full text-emerald-600 shadow-inner">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,25 +53,16 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-wide">IPL Bale Tirtawana</h1>
-                    <p class="text-[10px] text-emerald-100">Sistem Realtime Terintegrasi Google Sheets</p>
                 </div>
             </div>
-            <!-- Menu Tab Navigasi & Tombol Refresh Manual -->
-            <div class="flex items-center space-x-2 mt-1.5 sm:mt-0 w-full sm:w-auto justify-between sm:justify-end">
-                <button onclick="paksaRefreshDataWarga()" title="Segarkan Data Terkini" class="p-1.5 bg-emerald-700 hover:bg-emerald-800 rounded-lg text-white shadow transition-colors flex items-center justify-center text-xs font-semibold">
+            
+            <!-- Tombol Refresh Manual Minimalis Tanpa Teks -->
+            <div class="flex items-center space-x-2">
+                <button onclick="paksaRefreshDataWarga()" title="Segarkan Data Terkini" class="p-2 bg-emerald-700 hover:bg-emerald-800 rounded-lg text-white shadow transition-colors flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18" />
                     </svg>
-                    <span class="ml-1">Segarkan Data</span>
                 </button>
-                <div class="flex bg-emerald-700 bg-opacity-50 p-0.5 rounded-lg">
-                    <button id="tab-warga-btn" onclick="switchTab('warga')" class="px-3 py-1 rounded-md text-xs font-medium transition-all bg-white text-emerald-700 shadow-sm">
-                        Pencarian Warga
-                    </button>
-                    <button id="tab-admin-btn" onclick="switchTab('admin')" class="px-3 py-1 rounded-md text-xs font-medium transition-all text-white hover:text-emerald-100">
-                        Database
-                    </button>
-                </div>
             </div>
         </div>
     </header>
@@ -85,13 +76,13 @@
             <button onclick="dismissToast()" class="text-gray-400 hover:text-white font-bold text-lg">&times;</button>
         </div>
 
-        <!-- Indikator Status Memuat Modern yang Fleksibel -->
+        <!-- Indikator Status Memuat Modern -->
         <div id="loading-status-bar" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-xl text-[11px] font-semibold mb-4 flex items-center gap-2">
             <div class="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-emerald-700"></div>
             <span>Memperbarui informasi kas terbaru secara live dari Google Sheets perumahan...</span>
         </div>
 
-        <!-- ==================== TAB 1: PENCARIAN WARGA ==================== -->
+        <!-- ==================== AREA UTAMA: PENCARIAN WARGA ==================== -->
         <section id="section-warga" class="block space-y-4">
             
             <!-- Ringkasan Statistik Cepat -->
@@ -104,19 +95,19 @@
                     <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider mb-0.5">Status Sinkronisasi</p>
                     <div id="sync-badge-status" class="text-[10px] text-green-700 font-bold bg-green-50 px-1.5 py-0.5 rounded inline-flex items-center gap-1 w-max">
                         <span class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                        Terhubung Otomatis
+                        Terhubung
                     </div>
                 </div>
             </div>
 
-            <!-- 1. PILIHAN PER KLUSTER BLOK -->
+            <!-- 1. PANEL UTAMA: PILIHAH PER KLUSTER BLOK (MENU UTAMA PAK RT) -->
             <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div class="max-w-md">
-                    <h3 class="text-[10px] font-bold text-gray-700 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <h3 class="text-xs font-black text-gray-700 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                        PILIHAN PER KLUSTER BLOK
+                        PILIH KLUSTER
                     </h3>
                     <select id="filter-kluster" onchange="aksiPilihKlusterRT(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
                         <option value="">-- Pilih Kluster Huruf Di Sini (Misal: B) --</option>
@@ -124,49 +115,50 @@
                 </div>
             </div>
 
-            <!-- 2. PANEL SELEKSI NOMOR BLOK WARGA -->
+            <!-- 2. PANEL BERBENTUK CASCADING: FILTER TAHAP BLOK WARGA -->
             <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div class="max-w-md">
-                    <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <h3 class="text-xs font-black text-gray-700 mb-3 flex items-center gap-1 uppercase tracking-wider">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
-                        Pilih Nomor Blok Warga
-                    </label>
-                    <select id="filter-blok" onchange="aksiPilihBlokWarga(this)" 
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
-                        <option value="">-- Pilih Nomor Blok Warga Di Sini --</option>
-                    </select>
-                    <p class="text-[10px] text-gray-400 mt-1">Pilih nomor blok untuk memunculkan tabel rincian status pembayaran iuran.</p>
+                        PILIH BLOK
+                    </h3>
+                    
+                    <div class="space-y-3 pl-1 border-l-2 border-emerald-100">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                </svg>
+                                Tahap 1: Pilih Nama Kluster Warga
+                            </label>
+                            <select id="dropdown-tahap-kluster" onchange="filterDropdownNomorBlokWarga(this.value)" 
+                                    class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
+                                <option value="">-- Pilih Kluster Terlebih Dahulu --</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                Tahap 2: PILIH NOMOR BLOK WARGA
+                            </label>
+                            <select id="filter-blok" disabled onchange="aksiPilihBlokWarga(this)" 
+                                    class="w-full bg-gray-100 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none shadow-sm transition-all text-gray-400 cursor-not-allowed">
+                                <option value="">-- Pilih Nomor Blok (Pilih Tahap 1 Dulu) --</option>
+                            </select>
+                            <p class="text-[10px] text-gray-400 mt-1">Daftar nomor blok otomatis disaring hanya memunculkan unit dari kluster yang dipilih di atas.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </section>
-
-        <!-- ==================== TAB 2: PENGATURAN DATABASE (ADMIN) ==================== -->
-        <section id="section-admin" class="hidden space-y-4">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 space-y-4">
-                <div>
-                    <h2 class="text-sm font-bold text-gray-800">Hubungkan Link Google Sheets</h2>
-                    <p class="text-[11px] text-gray-500">Ubah tautan publik CSV Google Spreadsheet pengurus kas perumahan Anda di sini.</p>
-                </div>
-
-                <div class="space-y-1.5">
-                    <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide">URL Publik CSV Google Sheets:</label>
-                    <input type="text" id="sheets-url-input" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv" 
-                           class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm">
-                </div>
-
-                <div class="pt-3 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-2">
-                    <button onclick="simpanDanMuatUlangURLSheets()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow transition-all">
-                        Simpan & Hubungkan Database Baru
-                    </button>
-                    <button onclick="resetKeUrlSimulasi()" class="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors whitespace-nowrap">
-                        Reset Cache Data
-                    </button>
-                </div>
-            </div>
-        </section>
+        
+        <section id="section-admin" class="hidden"></section>
     </main>
 
     <!-- ==================== MODAL 1: DETAIL INDIVIDU WARGA ==================== -->
@@ -247,7 +239,7 @@
                 <button onclick="tutupLaporanKluster()" class="text-teal-100 hover:text-white text-xl font-bold p-1">&times;</button>
             </div>
             
-            <div class="bg-gray-100 px-3 py-2 border-b border-gray-200 flex flex-wrap items-center gap-2 flex-shrink-0">
+            <div class="bg-gray-100 px-3 py-2 border-b border-gray-200 flex flex-wrap items-center justify-between gap-2 flex-shrink-0">
                 <div class="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm text-[10px] w-full sm:w-auto">
                     <div class="flex items-center space-x-1">
                         <span class="text-gray-400">Dari:</span>
@@ -272,12 +264,19 @@
                         </select>
                     </div>
                 </div>
+
+                <button onclick="jalankanEksporTabelKlusterKeExcel()" class="inline-flex items-center space-x-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg shadow-sm transition-colors w-full sm:w-auto justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Ekspor Data ke Excel</span>
+                </button>
             </div>
 
             <!-- Kontainer Utama Scroll Tabel Kluster -->
-            <div class="p-1 overflow-auto custom-scrollbar flex-1 bg-gray-50">
+            <div class="p-1 overflow-auto custom-scrollbar flex-1 bg-gray-50" id="container-tabel-kluster-rt">
                 <div class="inline-block min-w-full align-middle bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <table class="min-w-full text-left text-[9px] sm:text-[11px] border-collapse table-fixed">
+                    <table id="tabel-rekap-kluster-id" class="min-w-full text-left text-[9px] sm:text-[11px] border-collapse table-fixed">
                         <thead id="kluster-thead-element">
                             <!-- Header Kolom Bulan Dinamis via JS -->
                         </thead>
@@ -339,7 +338,6 @@
                     bukaDataFallbackAwal();
                     return;
                 }
-                document.getElementById('sheets-url-input').value = savedUrl;
                 ambilDataDariGoogleSheets(savedUrl);
             }
         };
@@ -363,10 +361,10 @@
             let currentUrl = localStorage.getItem(SHEETS_URL_KEY) || "";
             if (currentUrl !== "") {
                 document.getElementById('sync-badge-status').className = "text-[10px] text-green-700 font-bold bg-green-50 px-1.5 py-0.5 rounded inline-flex items-center gap-1";
-                document.getElementById('sync-badge-status').innerHTML = "<span class='h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse'></span> Sheets Terhubung";
+                document.getElementById('sync-badge-status').innerHTML = "<span class='h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse'></span> Terhubung";
             } else {
                 document.getElementById('sync-badge-status').className = "text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded inline-flex items-center gap-1";
-                document.getElementById('sync-badge-status').innerHTML = "⚠️ Menunggu Tautan Tanam";
+                document.getElementById('sync-badge-status').innerHTML = "⚠️ Standby";
             }
         }
 
@@ -493,7 +491,7 @@
                     databaseBlokMaster = arrRes;
                     matangkanDatabaseKeUI();
                     document.getElementById('sync-badge-status').className = "text-[10px] text-green-700 font-bold bg-green-50 px-1.5 py-0.5 rounded inline-flex items-center gap-1";
-                    document.getElementById('sync-badge-status').innerHTML = "<span class='h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse'></span> Google Sheets Sinkron";
+                    document.getElementById('sync-badge-status').innerHTML = "<span class='h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse'></span> Terhubung";
                     showToast(`Sukses memperbarui data ${databaseBlokMaster.length} unit warga.`);
                 }
             } catch(e) {
@@ -505,24 +503,63 @@
         }
 
         function matangkanDatabaseKeUI() {
-            initDropdownBlok();
-            initDropdownKluster();
+            initDropdownTahapKluster();
+            initDropdownKlusterRT();
             document.getElementById('stat-total-warga').textContent = databaseBlokMaster.length;
         }
 
-        function initDropdownBlok() {
-            const select = document.getElementById('filter-blok');
+        function initDropdownTahapKluster() {
+            const select = document.getElementById('dropdown-tahap-kluster');
             if(!select) return;
-            select.innerHTML = '<option value="">-- Pilih Nomor Blok Warga Di Sini --</option>';
+            select.innerHTML = '<option value="">-- Pilih Kluster Terlebih Dahulu --</option>';
+            
+            let setPrefix = new Set();
             databaseBlokMaster.forEach(item => {
+                if (item.id_kode && item.id_kode.length > 0) {
+                    setPrefix.add(item.id_kode.charAt(0).toUpperCase());
+                }
+            });
+            
+            Array.from(setPrefix).sort().forEach(prefix => {
+                const opt = document.createElement('option');
+                opt.value = prefix;
+                opt.textContent = `Kluster ${prefix}`;
+                select.appendChild(opt);
+            });
+            
+            const selectBlok = document.getElementById('filter-blok');
+            selectBlok.innerHTML = '<option value="">-- Pilih Nomor Blok (Pilih Tahap 1 Dulu) --</option>';
+            selectBlok.disabled = true;
+            selectBlok.className = "w-full bg-gray-100 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none shadow-sm transition-all text-gray-400 cursor-not-allowed";
+        }
+
+        function filterDropdownNomorBlokWarga(prefixTerpilih) {
+            const selectBlok = document.getElementById('filter-blok');
+            if(!selectBlok) return;
+            
+            if (!prefixTerpilih) {
+                selectBlok.innerHTML = '<option value="">-- Pilih Nomor Blok (Pilih Tahap 1 Dulu) --</option>';
+                selectBlok.disabled = true;
+                selectBlok.className = "w-full bg-gray-100 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none shadow-sm transition-all text-gray-400 cursor-not-allowed";
+                return;
+            }
+            
+            selectBlok.disabled = false;
+            selectBlok.className = "w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all text-gray-800 cursor-pointer";
+            selectBlok.innerHTML = '<option value="">-- Pilih Nomor Blok Warga Di Sini --</option>';
+            
+            const unitTersaring = databaseBlokMaster.filter(item => item.id_kode.toUpperCase().startsWith(prefixTerpilih.toUpperCase()));
+            unitTersaring.sort((a, b) => a.id_kode.localeCompare(b.id_kode));
+            
+            unitTersaring.forEach(item => {
                 const opt = document.createElement('option');
                 opt.value = item.id_kode;
                 opt.textContent = `${item.id_kode} - ${item.nama_blok}`;
-                select.appendChild(opt);
+                selectBlok.appendChild(opt);
             });
         }
 
-        function initDropdownKluster() {
+        function initDropdownKlusterRT() {
             const select = document.getElementById('filter-kluster');
             if(!select) return;
             select.innerHTML = '<option value="">-- Pilih Kluster Huruf Di Sini (Misal: B) --</option>';
@@ -646,6 +683,8 @@
             document.getElementById('kluster-modal').classList.remove('hidden');
         }
 
+        let urutanBulanDinamisGlobalUntukEkspor = [];
+
         function renderTabelKluster() {
             const prefix = document.getElementById('kluster-title-letter').textContent;
             const startM = document.getElementById('kluster-bulan-mulai').value;
@@ -673,12 +712,14 @@
                 let blnIdx = (tanggalBerjalan.getMonth() + 1).toString().padStart(2, '0');
                 urutanBulanDinamis.push({
                     idx: `${thn}-${blnIdx}`,
-                    labelSingkat: `${singkatanBulanNama[tanggalBerjalan.getMonth()]} ${thn.toString().substring(2)}`
+                    labelSingkat: `${singkatanBulanNama[tanggalBerjalan.getMonth()]} ${thn.toString().substring(2)}`,
+                    labelPanjang: `${pemetaanBulanNama[singkatanBulanNama[tanggalBerjalan.getMonth()].toLowerCase()]} ${thn}`
                 });
                 tanggalBerjalan.setMonth(tanggalBerjalan.getMonth() + 1);
             }
 
-            // Menerapkan lebar kolom statis keras (col-width) agar Nama Blok mendapat porsi luas di HP
+            urutanBulanDinamisGlobalUntukEkspor = [...urutanBulanDinamis];
+
             let colgroupHtml = `
                 <colgroup>
                     <col class="w-[50px] sm:w-[65px]">
@@ -689,7 +730,7 @@
 
             let headerHtml = colgroupHtml + `
                 <tr class="bg-gray-100 border-b border-gray-200 text-gray-700 font-bold text-center uppercase text-[8px] sm:text-[10px]">
-                    <th class="py-2 px-0.5 border-r border-gray-200 sticky left-0 bg-gray-100基本 z-20 text-center shadow-sm">Kode</th>
+                    <th class="py-2 px-0.5 border-r border-gray-200 sticky left-0 bg-gray-100 z-20 text-center shadow-sm">Kode</th>
                     <th class="py-2 px-1 border-r border-gray-200 sticky left-[50px] sm:left-[65px] bg-gray-100 z-20 text-left shadow-sm">Nama Blok</th>
             `;
             urutanBulanDinamis.forEach(b => { headerHtml += `<th class="py-2 px-0.5 border-r border-gray-200 text-center">${b.labelSingkat}</th>`; });
@@ -722,23 +763,105 @@
             });
         }
 
-        function simpanDanMuatUlangURLSheets() {
-            const url = document.getElementById('sheets-url-input').value.trim();
-            if (!url) { showToast("Masukkan link URL yang valid!", true); return; }
-            if (url.includes("/edit") || !url.includes("output=csv")) {
-                showToast("Gagal: Tautan harus berupa link publik CSV (berakhiran output=csv)!", true);
+        function jalankanEksporTabelKlusterKeExcel() {
+            const prefix = document.getElementById('kluster-title-letter').textContent;
+            if (databaseBlokMaster.length === 0) {
+                showToast("Tidak ada data warga untuk diekspor.", true);
                 return;
             }
-            localStorage.clear(); 
-            localStorage.setItem(SHEETS_URL_KEY, url);
-            ambilDataDariGoogleSheets(url);
-        }
 
-        function resetKeUrlSimulasi() {
-            localStorage.clear();
-            document.getElementById('sheets-url-input').value = "";
-            bukaDataFallbackAwal();
-            showToast("Cache berhasil dibersihkan.");
+            const filteredUnits = databaseBlokMaster.filter(item => item.id_kode.toUpperCase().startsWith(prefix));
+            filteredUnits.sort((a, b) => a.id_kode.localeCompare(b.id_kode));
+
+            if (filteredUnits.length === 0) {
+                showToast(`Tidak ada data untuk Kluster ${prefix}.`, true);
+                return;
+            }
+
+            let htmlExcel = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <x:ExcelWorkbook>
+                            <x:ExcelWorksheets>
+                                <x:ExcelWorksheet>
+                                    <x:Name>Rekap Kluster ${prefix}</x:Name>
+                                    <x:WorksheetOptions>
+                                        <x:DisplayGridlines/>
+                                    </x:WorksheetOptions>
+                                </x:ExcelWorksheet>
+                            </x:ExcelWorksheets>
+                        </x:ExcelWorkbook>
+                    </xml>
+                    <![endif]-->
+                    <meta charset="utf-8">
+                    <style>
+                        table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11pt; }
+                        th { background-color: #0d9488; color: #ffffff; font-weight: bold; border: 1px solid #cbd5e1; text-align: center; padding: 6px; }
+                        td { border: 1px solid #e2e8f0; padding: 6px; text-align: center; }
+                        .text-left { text-align: left; font-weight: bold; }
+                        .bg-title { font-size: 14pt; font-weight: bold; text-align: left; border: none; padding-bottom: 10px; }
+                        .lunas-cell { color: #16a34a; font-weight: bold; background-color: #f0fdf4; }
+                        .belum-cell { color: #dc2626; font-weight: bold; background-color: #fef2f2; }
+                        .total-cell { background-color: #f0fdfa; font-weight: bold; color: #0f766e; }
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <tr>
+                            <td colspan="${urutanBulanDinamisGlobalUntukEkspor.length + 3}" class="bg-title">
+                                REKAPITULASI IURAN IPL WARGA KLUSTER ${prefix} - PERUMAHAN BALE TIRTAWANA
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>No. Kode</th>
+                            <th style="text-align: left; min-w-width: 200px;">Nama Pelanggan / Blok</th>
+            `;
+
+            urutanBulanDinamisGlobalUntukEkspor.forEach(b => {
+                htmlExcel += `<th>${b.labelPanjang}</th>`;
+            });
+            htmlExcel += `<th style="background-color: #f0fdfa; color: #0f766e;">Total Lunas</th></tr>`;
+
+            filteredUnits.forEach(unit => {
+                htmlExcel += `
+                    <tr>
+                        <td style="font-family: monospace; font-weight: bold; background-color: #f8fafc;">${unit.id_kode}</td>
+                        <td class="text-left">${unit.nama_blok}</td>
+                `;
+
+                let lunasCount = 0;
+                urutanBulanDinamisGlobalUntukEkspor.forEach(b => {
+                    const matchTx = unit.transaksi_list.find(tx => tx.bulan_idx === b.idx);
+                    if (matchTx && matchTx.lunas) {
+                        lunasCount++;
+                        htmlExcel += `<td class="lunas-cell">LUNAS</td>`;
+                    } else {
+                        htmlExcel += `<td class="belum-cell">BELUM BAYAR</td>`;
+                    }
+                });
+
+                htmlExcel += `<td class="total-cell">${lunasCount} / ${urutanBulanDinamisGlobalUntukEkspor.length} Bulan</td></tr>`;
+            });
+
+            htmlExcel += `</table></body></html>`;
+
+            const dataBlob = new Blob([htmlExcel], { type: 'application/vnd.ms-excel' });
+            const urlUnduh = URL.createObjectURL(dataBlob);
+            
+            const tautanJangkar = document.createElement('a');
+            tautanJangkar.href = urlUnduh;
+            
+            const startStr = urutanBulanDinamisGlobalUntukEkspor[0].labelSingkat.replace(" ", "");
+            const endStr = urutanBulanDinamisGlobalUntukEkspor[urutanBulanDinamisGlobalUntukEkspor.length - 1].labelSingkat.replace(" ", "");
+            tautanJangkar.download = `IPL_BaleTirtawana_Kluster_${prefix}_(${startStr}_to_${endStr}).xls`;
+            
+            document.body.appendChild(tautanJangkar);
+            tautanJangkar.click();
+            document.body.removeChild(tautanJangkar);
+            
+            showToast(`Sukses mengunduh laporan Excel Kluster ${prefix}!`);
         }
 
         function formatRupiah(angka) { if (!angka) return "0"; return Number(angka).toLocaleString('id-ID'); }
@@ -746,16 +869,11 @@
         function tutupLaporanKluster() { document.getElementById('kluster-modal').classList.add('hidden'); }
         
         function switchTab(target) {
-            const btnWarga = document.getElementById('tab-warga-btn'); const btnAdmin = document.getElementById('tab-admin-btn');
             const secWarga = document.getElementById('section-warga'); const secAdmin = document.getElementById('section-admin');
             if (target === 'warga') {
-                btnWarga.className = "px-3 py-1 rounded-md text-xs font-medium transition-all bg-white text-emerald-700 shadow-sm";
-                btnAdmin.className = "px-3 py-1 rounded-md text-xs font-medium transition-all text-white hover:text-emerald-100";
                 secWarga.classList.remove('hidden'); secAdmin.classList.add('hidden');
             } else {
-                btnAdmin.className = "px-3 py-1 rounded-md text-xs font-medium transition-all bg-white text-emerald-700 shadow-sm";
-                btnWarga.className = "px-3 py-1 rounded-md text-xs font-medium transition-all text-white hover:text-emerald-100";
-                secAdmin.classList.remove('hidden'); secWarga.classList.add('hidden');
+                secAdmin.classList.remove('hidden'); secWarga.classList.remove('hidden');
             }
         }
         
