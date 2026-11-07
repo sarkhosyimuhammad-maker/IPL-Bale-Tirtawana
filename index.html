@@ -48,17 +48,25 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-wide">IPL Bale Tirtawana</h1>
-                    <p class="text-xs text-emerald-100">Sistem Realtime Terintegrasi Google Sheets • Gratis</p>
+                    <p class="text-xs text-emerald-100">Sistem Realtime Terintegrasi Google Sheets</p>
                 </div>
             </div>
-            <!-- Menu Tab Navigasi -->
-            <div class="flex bg-emerald-700 bg-opacity-50 p-1 rounded-lg mt-2 sm:mt-0">
-                <button id="tab-warga-btn" onclick="switchTab('warga')" class="px-4 py-1.5 rounded-md text-sm font-medium transition-all bg-white text-emerald-700 shadow shadow-sm">
-                    Pencarian Warga
+            <!-- Menu Tab Navigasi & Tombol Refresh Manual -->
+            <div class="flex items-center space-x-2 mt-2 sm:mt-0">
+                <button onclick="paksaRefreshDataWarga()" title="Segarkan Data Terkini" class="p-2 bg-emerald-700 hover:bg-emerald-800 rounded-lg text-white shadow transition-colors flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18" />
+                    </svg>
+                    <span class="text-xs font-bold ml-1 hidden sm:inline">Segarkan Data Sheets</span>
                 </button>
-                <button id="tab-admin-btn" onclick="switchTab('admin')" class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white hover:text-emerald-100">
-                    Pengaturan Database
-                </button>
+                <div class="flex bg-emerald-700 bg-opacity-50 p-1 rounded-lg">
+                    <button id="tab-warga-btn" onclick="switchTab('warga')" class="px-4 py-1.5 rounded-md text-sm font-medium transition-all bg-white text-emerald-700 shadow shadow-sm">
+                        Pencarian Warga
+                    </button>
+                    <button id="tab-admin-btn" onclick="switchTab('admin')" class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white hover:text-emerald-100">
+                        Pengaturan Database
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -152,7 +160,7 @@
                         Simpan & Hubungkan Database Baru
                     </button>
                     <button onclick="resetKeUrlSimulasi()" class="px-4 py-2 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors whitespace-nowrap">
-                        Gunakan Tautan Contoh Gambar Asli
+                        Bersihkan Cache & Reset Tampilan
                     </button>
                 </div>
             </div>
@@ -337,18 +345,16 @@
         window.onload = function() {
             // =========================================================================
             // 💡 TEMPAT MENARUH LINK EMAS GOOGLE SHEETS ANDA AGAR KONEK OTOMATIS DI HP WARGA:
-            // Pastikan memasukkan tautan khusus CSV yang berakhiran &output=csv di sini!
+            // Salin dan Tempel Link Panjang .csv Anda di dalam tanda kutip di bawah ini!
             // =========================================================================
             const DEFAULT_SHEETS_URL = ""; 
 
-            // LOGIKA PAKSA SINKRONISASI TOTAL:
-            // Jika ada link default baru yang dipasang admin di GitHub, 
-            // paksa hapus seluruh sisa cache memori kosong lama di browser HP warga.
             let savedUrl = localStorage.getItem(SHEETS_URL_KEY);
             
+            // Aturan paksa sinkronisasi cache:
             if (DEFAULT_SHEETS_URL !== "") {
                 if (!savedUrl || savedUrl !== DEFAULT_SHEETS_URL) {
-                    localStorage.clear(); // Bersihkan memori usang penyebab stuck klik
+                    localStorage.clear(); 
                     localStorage.setItem(SHEETS_URL_KEY, DEFAULT_SHEETS_URL);
                     savedUrl = DEFAULT_SHEETS_URL;
                 }
@@ -367,6 +373,17 @@
             }
         };
 
+        function paksaRefreshDataWarga() {
+            let savedUrl = localStorage.getItem(SHEETS_URL_KEY);
+            if (savedUrl) {
+                let hancurkanCacheUrl = savedUrl + (savedUrl.includes("?") ? "&" : "?") + "t=" + new Date().getTime();
+                showToast("Memaksa browser HP membersihkan cache & mendownload data terbaru...");
+                ambilDataDariGoogleSheets(hancurkanCacheUrl);
+            } else {
+                showToast("Tautan Google Sheets belum dikonfigurasi di tab admin.", true);
+            }
+        }
+
         function bukaDataFallbackAwal() {
             databaseBlokMaster = [...simulasiLokalData];
             matangkanDatabaseKeUI();
@@ -383,12 +400,6 @@
         }
 
         function ambilDataDariGoogleSheets(url) {
-            if (url.includes("/edit") || !url.includes("output=csv")) {
-                showToast("Eror: Tautan bukan tipe (.csv) publik!", true);
-                bukaDataFallbackAwal();
-                return;
-            }
-
             document.getElementById('loading-status-bar').classList.remove('hidden');
             let finalUrl = url;
             if (window.location.origin.includes("google") || window.location.href.includes("ai-gateway") || !window.location.origin.startsWith("http")) {
@@ -416,7 +427,7 @@
                             prosesTeksCSV(csv);
                         })
                         .catch(e => {
-                            showToast("Gagal memproses data. Membuka penyimpanan lokal.", true);
+                            showToast("Gagal menyinkronkan data terbaru. Menampilkan data tersimpan.", true);
                             bukaDataFallbackAwal();
                         });
                 });
@@ -511,12 +522,11 @@
                     databaseBlokMaster = arrRes;
                     matangkanDatabaseKeUI();
                     document.getElementById('sync-badge-status').className = "text-xs text-green-700 font-bold bg-green-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1";
-                    document.getElementById('sync-badge-status').innerHTML = "<span class='h-2 w-2 rounded-full bg-green-500 animate-pulse'></span> Link Google Sheets Aktif & Realtime";
-                    showToast(`Koneksi Sukses! Berhasil memuat ${databaseBlokMaster.length} unit blok warga.`);
+                    document.getElementById('sync-badge-status').innerHTML = "<span class='h-2 w-2 rounded-full bg-green-500 animate-pulse'></span> Link Google Sheets Terhubung & Terupdate";
+                    showToast(`Sukses sinkronisasi! Memuat data ${databaseBlokMaster.length} unit warga.`);
                 }
             } catch(e) {
                 console.error(e);
-                showToast("Format dokumen Excel tidak sesuai standar database vertikal.", true);
                 bukaDataFallbackAwal();
             } finally {
                 document.getElementById('loading-status-bar').classList.add('hidden');
@@ -729,7 +739,7 @@
                 showToast("Gagal: Link harus berupa link publik CSV (berakhiran output=csv)!", true);
                 return;
             }
-            localStorage.clear(); // Hapus cache lama agar bersih sempurna
+            localStorage.clear(); 
             localStorage.setItem(SHEETS_URL_KEY, url);
             ambilDataDariGoogleSheets(url);
         }
@@ -738,7 +748,7 @@
             localStorage.clear();
             document.getElementById('sheets-url-input').value = "";
             bukaDataFallbackAwal();
-            showToast("Memori dibersihkan. Kembali ke basis simulasi awal.");
+            showToast("Cache dibersihkan. Memuat ulang database...");
         }
 
         function formatRupiah(angka) { if (!angka) return "0"; return Number(angka).toLocaleString('id-ID'); }
