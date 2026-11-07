@@ -337,25 +337,31 @@
         window.onload = function() {
             // =========================================================================
             // 💡 TEMPAT MENARUH LINK EMAS GOOGLE SHEETS ANDA AGAR KONEK OTOMATIS DI HP WARGA:
-            // Salin dan Tempel Link Panjang .csv Anda di dalam tanda kutip di bawah ini!
+            // Pastikan memasukkan tautan khusus CSV yang berakhiran &output=csv di sini!
             // =========================================================================
             const DEFAULT_SHEETS_URL = ""; 
 
-            // 1. Jalankan tampilan cadangan
-            bukaDataFallbackAwal();
-
-            // LOGIKA PAKSA BARU: Jika admin mengisi DEFAULT_SHEETS_URL di dalam kode,
-            // maka link ini WAJIB selalu diutamakan menggantikan memori kosong lama di HP.
+            // LOGIKA PAKSA SINKRONISASI TOTAL:
+            // Jika ada link default baru yang dipasang admin di GitHub, 
+            // paksa hapus seluruh sisa cache memori kosong lama di browser HP warga.
             let savedUrl = localStorage.getItem(SHEETS_URL_KEY);
             
             if (DEFAULT_SHEETS_URL !== "") {
                 if (!savedUrl || savedUrl !== DEFAULT_SHEETS_URL) {
-                    savedUrl = DEFAULT_SHEETS_URL;
+                    localStorage.clear(); // Bersihkan memori usang penyebab stuck klik
                     localStorage.setItem(SHEETS_URL_KEY, DEFAULT_SHEETS_URL);
+                    savedUrl = DEFAULT_SHEETS_URL;
                 }
             }
 
+            bukaDataFallbackAwal();
+
             if (savedUrl) {
+                if (savedUrl.includes("/edit") || savedUrl.includes("#gid=")) {
+                    localStorage.removeItem(SHEETS_URL_KEY);
+                    bukaDataFallbackAwal();
+                    return;
+                }
                 document.getElementById('sheets-url-input').value = savedUrl;
                 ambilDataDariGoogleSheets(savedUrl);
             }
@@ -365,13 +371,25 @@
             databaseBlokMaster = [...simulasiLokalData];
             matangkanDatabaseKeUI();
             document.getElementById('loading-status-bar').classList.add('hidden');
-            document.getElementById('sync-badge-status').className = "text-xs text-amber-700 font-bold bg-amber-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1";
-            document.getElementById('sync-badge-status').innerHTML = "⚠️ Siap Dihubungkan ke Link Excel Google Sheets Anda";
+            
+            let currentUrl = localStorage.getItem(SHEETS_URL_KEY) || "";
+            if (currentUrl !== "") {
+                document.getElementById('sync-badge-status').className = "text-xs text-green-700 font-bold bg-green-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1";
+                document.getElementById('sync-badge-status').innerHTML = "<span class='h-2 w-2 rounded-full bg-green-500 animate-pulse'></span> Link Google Sheets Terpasang";
+            } else {
+                document.getElementById('sync-badge-status').className = "text-xs text-amber-700 font-bold bg-amber-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1";
+                document.getElementById('sync-badge-status').innerHTML = "⚠️ Siap Dihubungkan ke Link Excel Google Sheets Anda";
+            }
         }
 
         function ambilDataDariGoogleSheets(url) {
+            if (url.includes("/edit") || !url.includes("output=csv")) {
+                showToast("Eror: Tautan bukan tipe (.csv) publik!", true);
+                bukaDataFallbackAwal();
+                return;
+            }
+
             document.getElementById('loading-status-bar').classList.remove('hidden');
-            
             let finalUrl = url;
             if (window.location.origin.includes("google") || window.location.href.includes("ai-gateway") || !window.location.origin.startsWith("http")) {
                 finalUrl = "https://allorigins.win" + encodeURIComponent(url);
@@ -383,6 +401,9 @@
                     return response.text();
                 })
                 .then(csvText => {
+                    if (csvText.includes("<!DOCTYPE html>") || csvText.includes("google-site-verification")) {
+                        throw new Error("Bukan data CSV.");
+                    }
                     prosesTeksCSV(csvText);
                 })
                 .catch(err => {
@@ -390,10 +411,13 @@
                     let altUrl = "https://corsproxy.io?" + encodeURIComponent(url);
                     fetch(altUrl)
                         .then(r => r.text())
-                        .then(csv => prosesTeksCSV(csv))
+                        .then(csv => {
+                            if (csv.includes("<!DOCTYPE html>")) throw new Error();
+                            prosesTeksCSV(csv);
+                        })
                         .catch(e => {
-                            showToast("Koneksi eksternal sheets dihambat keamanan lokal browser.", false);
-                            document.getElementById('loading-status-bar').classList.add('hidden');
+                            showToast("Gagal memproses data. Membuka penyimpanan lokal.", true);
+                            bukaDataFallbackAwal();
                         });
                 });
         }
@@ -492,6 +516,8 @@
                 }
             } catch(e) {
                 console.error(e);
+                showToast("Format dokumen Excel tidak sesuai standar database vertikal.", true);
+                bukaDataFallbackAwal();
             } finally {
                 document.getElementById('loading-status-bar').classList.add('hidden');
             }
@@ -535,7 +561,6 @@
             });
         }
 
-        // Dropdown Warga
         function aksiPilihBlokWarga(element) {
             const idKode = element.value;
             if (!idKode) return;
@@ -544,7 +569,6 @@
             element.value = "";
         }
 
-        // Dropdown Kluster
         function aksiPilihKlusterRT(element) {
             const prefix = element.value;
             if (!prefix) return;
@@ -701,15 +725,20 @@
         function simpanDanMuatUlangURLSheets() {
             const url = document.getElementById('sheets-url-input').value.trim();
             if (!url) { showToast("Masukkan link URL yang valid!", true); return; }
+            if (url.includes("/edit") || !url.includes("output=csv")) {
+                showToast("Gagal: Link harus berupa link publik CSV (berakhiran output=csv)!", true);
+                return;
+            }
+            localStorage.clear(); // Hapus cache lama agar bersih sempurna
             localStorage.setItem(SHEETS_URL_KEY, url);
             ambilDataDariGoogleSheets(url);
         }
 
         function resetKeUrlSimulasi() {
-            localStorage.removeItem(SHEETS_URL_KEY);
+            localStorage.clear();
             document.getElementById('sheets-url-input').value = "";
             bukaDataFallbackAwal();
-            showToast("Kembali ke basis data simulasi bawaan.");
+            showToast("Memori dibersihkan. Kembali ke basis simulasi awal.");
         }
 
         function formatRupiah(angka) { if (!angka) return "0"; return Number(angka).toLocaleString('id-ID'); }
