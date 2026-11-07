@@ -335,13 +335,23 @@
         let databaseBlokMaster = [];
         let blokAktifDiModal = null;
 
-        // Lifecycle Inisialisasi Baru: Menu atas dijamin AKTIF seketika sejak awal!
         window.onload = function() {
-            // 1. Muat basis data cadangan agar tombol dropdown & menu navigasi bisa diklik langsung
+            // =========================================================================
+            // 💡 TEMPAT MENARUH LINK EMAS GOOGLE SHEETS ANDA AGAR KONEK OTOMATIS DI HP WARGA:
+            // Salin dan Tempel Link Panjang .csv Anda di dalam tanda kutip di bawah ini!
+            // =========================================================================
+            const DEFAULT_SHEETS_URL = ""; 
+
+            // 1. Jalankan tampilan dasar
             bukaDataFallbackAwal();
 
-            // 2. Ambil data asli Sheets secara asinkron di belakang layar tanpa mengunci tombol klik
-            const savedUrl = localStorage.getItem(SHEETS_URL_KEY);
+            // 2. Ambil dari memori lokal HP atau ambil dari link default di atas jika memori HP kosong
+            let savedUrl = localStorage.getItem(SHEETS_URL_KEY);
+            if (!savedUrl && DEFAULT_SHEETS_URL !== "") {
+                savedUrl = DEFAULT_SHEETS_URL;
+                localStorage.setItem(SHEETS_URL_KEY, DEFAULT_SHEETS_URL);
+            }
+
             if (savedUrl) {
                 document.getElementById('sheets-url-input').value = savedUrl;
                 ambilDataDariGoogleSheets(savedUrl);
@@ -525,8 +535,8 @@
         function aksiPilihBlokWarga(element) {
             const idKode = element.value;
             if (!idKode) return;
-            const wargaTerpilih = databaseBlokMaster.find(item => item.id_kode === idKode);
-            if (wargaTerpilih) bukaModalDetail(wargaTerpilih);
+            const wargaTerpilled = databaseBlokMaster.find(item => item.id_kode === idKode);
+            if (wargaTerpilled) bukaModalDetail(wargaTerpilled);
             element.value = "";
         }
 
