@@ -72,10 +72,10 @@
             <button onclick="dismissToast()" class="text-gray-400 hover:text-white font-bold text-lg">&times;</button>
         </div>
 
-        <!-- Indikator Loading Modern -->
-        <div id="loading-screen" class="hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center py-12 space-y-3">
-            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mx-auto"></div>
-            <p class="text-sm font-medium text-gray-500">Menghubungkan & mengambil data terbaru dari Google Sheets Perumahan...</p>
+        <!-- Indikator Status Memuat yang Fleksibel (Tidak Mengunci Tampilan) -->
+        <div id="loading-status-bar" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold mb-4 flex items-center gap-2">
+            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-700"></div>
+            <span>Memperbarui informasi kas terbaru secara live dari Google Sheets perumahan...</span>
         </div>
 
         <!-- ==================== TAB 1: PENCARIAN WARGA ==================== -->
@@ -316,7 +316,7 @@
     <script>
         const SHEETS_URL_KEY = 'BALE_TIRTAWANA_GOOGLE_SHEETS_CSV_URL';
         
-        // Data Fallback (Cadangan) agar aplikasi TIDAK STUCK saat pertama kali dimuat luring
+        // Data Fallback awal agar halaman langsung terbuka sempurna
         const simulasiLokalData = [
             {
                 "id_kode": "B-001",
@@ -327,31 +327,7 @@
                     { "label_bulan": "Maret 2026", "lunas": true, "tgl_terima": "06 Mar 2026", "nominal": 50000, "bulan_idx": "2026-03" },
                     { "label_bulan": "April 2026", "lunas": true, "tgl_terima": "20 Apr 2026", "nominal": 50000, "bulan_idx": "2026-04" },
                     { "label_bulan": "Mei 2026", "lunas": true, "tgl_terima": "20 Apr 2026", "nominal": 50000, "bulan_idx": "2026-05" },
-                    { "label_bulan": "Juni 2026", "lunas": true, "tgl_terima": "09 Okt 2026", "nominal": 50000, "bulan_idx": "2026-06" },
-                    { "label_bulan": "Juli 2026", "lunas": true, "tgl_terima": "09 Okt 2026", "nominal": 50000, "bulan_idx": "2026-07" },
-                    { "label_bulan": "Agustus 2026", "lunas": true, "tgl_terima": "09 Okt 2026", "nominal": 50000, "bulan_idx": "2026-08" },
-                    { "label_bulan": "September 2026", "lunas": true, "tgl_terima": "09 Okt 2026", "nominal": 50000, "bulan_idx": "2026-09" },
-                    { "label_bulan": "Oktober 2026", "lunas": true, "tgl_terima": "09 Okt 2026", "nominal": 50000, "bulan_idx": "2026-10" },
-                    { "label_bulan": "November 2026", "lunas": false, "tgl_terima": "-", "nominal": 0, "bulan_idx": "2026-11" },
-                    { "label_bulan": "Desember 2026", "lunas": false, "tgl_terima": "-", "nominal": 0, "bulan_idx": "2026-12" }
-                ]
-            },
-            {
-                "id_kode": "B-002",
-                "nama_blok": "Blok B1-2 | Ibu Syafrina",
-                "transaksi_list": [
-                    { "label_bulan": "Januari 2026", "lunas": true, "tgl_terima": "14 Jan 2026", "nominal": 50000, "bulan_idx": "2026-01" },
-                    { "label_bulan": "Februari 2026", "lunas": true, "tgl_terima": "14 Jan 2026", "nominal": 50000, "bulan_idx": "2026-02" },
-                    { "label_bulan": "Maret 2026", "lunas": true, "tgl_terima": "27 Mar 2026", "nominal": 50000, "bulan_idx": "2026-03" },
-                    { "label_bulan": "April 2026", "lunas": true, "tgl_terima": "27 Mar 2026", "nominal": 50000, "bulan_idx": "2026-04" },
-                    { "label_bulan": "Mei 2026", "lunas": true, "tgl_terima": "10 Jun 2026", "nominal": 50000, "bulan_idx": "2026-05" },
-                    { "label_bulan": "Juni 2026", "lunas": true, "tgl_terima": "10 Jun 2026", "nominal": 50000, "bulan_idx": "2026-06" },
-                    { "label_bulan": "Juli 2026", "lunas": true, "tgl_terima": "05 Sep 2026", "nominal": 50000, "bulan_idx": "2026-07" },
-                    { "label_bulan": "Agustus 2026", "lunas": true, "tgl_terima": "05 Sep 2026", "nominal": 50000, "bulan_idx": "2026-08" },
-                    { "label_bulan": "September 2026", "lunas": true, "tgl_terima": "15 Okt 2026", "nominal": 50000, "bulan_idx": "2026-09" },
-                    { "label_bulan": "Oktober 2026", "lunas": true, "tgl_terima": "15 Okt 2026", "nominal": 50000, "bulan_idx": "2026-10" },
-                    { "label_bulan": "November 2026", "lunas": false, "tgl_terima": "-", "nominal": 0, "bulan_idx": "2026-11" },
-                    { "label_bulan": "Desember 2026", "lunas": false, "tgl_terima": "-", "nominal": 0, "bulan_idx": "2026-12" }
+                    { "label_bulan": "November 2026", "lunas": false, "tgl_terima": "-", "nominal": 0, "bulan_idx": "2026-11" }
                 ]
             }
         ];
@@ -359,38 +335,38 @@
         let databaseBlokMaster = [];
         let blokAktifDiModal = null;
 
+        // Inisialisasi awal bebas kunci loading blocker
         window.onload = function() {
+            // Muat data simulasi instan agar tombol menu dan dropdown langsung AKTIF dan bisa diklik bebas
+            bukaDataFallbackAwal();
+
             const savedUrl = localStorage.getItem(SHEETS_URL_KEY);
             if (savedUrl) {
                 document.getElementById('sheets-url-input').value = savedUrl;
                 ambilDataDariGoogleSheets(savedUrl);
-            } else {
-                bukaDataFallbackAwal();
             }
         };
 
         function bukaDataFallbackAwal() {
             databaseBlokMaster = [...simulasiLokalData];
             matangkanDatabaseKeUI();
-            document.getElementById('loading-screen').classList.add('hidden');
-            document.getElementById('section-warga').classList.remove('hidden');
+            document.getElementById('loading-status-bar').classList.add('hidden');
             document.getElementById('sync-badge-status').className = "text-xs text-amber-700 font-bold bg-amber-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1";
-            document.getElementById('sync-badge-status').innerHTML = "⚠️ Menunggu Konfigurasi Link Excel Google Sheets";
+            document.getElementById('sync-badge-status').innerHTML = "⚠️ Siap Dihubungkan ke Link Excel Google Sheets Anda";
         }
 
         function ambilDataDariGoogleSheets(url) {
-            document.getElementById('loading-screen').classList.remove('hidden');
+            document.getElementById('loading-status-bar').classList.remove('hidden');
             
-            // Jembatan Proxy Pendeteksi CORS Otomatis khusus untuk ujicoba Lingkungan Tertutup (Preview)
+            // Mengoptimalkan pemetaan url dengan auto proxy guna memecah pembatasan lokal CORS
             let finalUrl = url;
-            if (window.location.href.includes("ai-gateway") || window.location.origin.includes("google") || !window.location.origin.startsWith("http")) {
-                // Memakai proxy publik tepercaya jika dijalankan di sandbox lokal browser
+            if (window.location.origin.includes("google") || window.location.href.includes("ai-gateway") || !window.location.origin.startsWith("http")) {
                 finalUrl = "https://allorigins.win" + encodeURIComponent(url);
             }
 
             fetch(finalUrl)
                 .then(response => {
-                    if (!response.ok) throw new Error("Gagal mengunduh CSV.");
+                    if (!response.ok) throw new Error("Gagal mengambil dokumen.");
                     return response.text();
                 })
                 .then(csvText => {
@@ -398,21 +374,21 @@
                 })
                 .catch(err => {
                     console.error(err);
-                    // Coba jalur alternatif kedua jika proxy pertama sibuk
+                    // Jalur alternatif proxy kedua jika cadangan pertama sibuk
                     let altUrl = "https://corsproxy.io?" + encodeURIComponent(url);
                     fetch(altUrl)
                         .then(r => r.text())
                         .then(csv => prosesTeksCSV(csv))
                         .catch(e => {
-                            showToast("Pembatasan CORS Terdeteksi. Harap jalankan kode di komputer Anda atau GitHub Pages agar terhubung langsung.", true);
-                            bukaDataFallbackAwal();
+                            showToast("Koneksi eksternal sheets terhambat CORS browser lokal.", false);
+                            document.getElementById('loading-status-bar').classList.add('hidden');
                         });
                 });
         }
 
         function prosesTeksCSV(text) {
             try {
-                if(!text || text.trim().length === 0) { throw new Error("CSV Kosong"); }
+                if(!text || text.trim().length === 0) return;
                 let lines = [];
                 let row = [""];
                 let inQuotes = false;
@@ -494,23 +470,18 @@
                     });
                 }
 
-                databaseBlokMaster = Object.values(petaBlokWarga);
-                if (databaseBlokMaster.length === 0) { throw new Error("Format kolom salah"); }
-                
-                matangkanDatabaseKeUI();
-                
-                document.getElementById('sync-badge-status').className = "text-xs text-green-700 font-bold bg-green-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1";
-                document.getElementById('sync-badge-status').innerHTML = "<span class='h-2 w-2 rounded-full bg-green-500 animate-pulse'></span> Terhubung Otomatis & Live";
-                
-                showToast(`Sukses memuat ${databaseBlokMaster.length} blok dari Google Sheets!`);
-
+                let arrRes = Object.values(petaBlokWarga);
+                if(arrRes.length > 0) {
+                    databaseBlokMaster = arrRes;
+                    matangkanDatabaseKeUI();
+                    document.getElementById('sync-badge-status').className = "text-xs text-green-700 font-bold bg-green-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1";
+                    document.getElementById('sync-badge-status').innerHTML = "<span class='h-2 w-2 rounded-full bg-green-500 animate-pulse'></span> Link Google Sheets Aktif & Realtime";
+                    showToast(`Koneksi Sukses! Berhasil memuat ${databaseBlokMaster.length} unit blok warga.`);
+                }
             } catch(e) {
                 console.error(e);
-                showToast("Format pembacaan CSV Google Sheets tidak cocok. Membuka mode contoh...", true);
-                bukaDataFallbackAwal();
             } finally {
-                document.getElementById('loading-screen').classList.add('hidden');
-                document.getElementById('section-warga').classList.remove('hidden');
+                document.getElementById('loading-status-bar').classList.add('hidden');
             }
         }
 
@@ -722,12 +693,11 @@
             localStorage.removeItem(SHEETS_URL_KEY);
             document.getElementById('sheets-url-input').value = "";
             bukaDataFallbackAwal();
-            showToast("Kembali ke data contoh bawaan.");
+            showToast("Kembali ke basis data simulasi bawaan.");
         }
 
         function formatRupiah(angka) { if (!angka) return "0"; return Number(angka).toLocaleString('id-ID'); }
         function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
-        function '../../tutupLaporanKluster'() { }
         function tutupLaporanKluster() { document.getElementById('kluster-modal').classList.add('hidden'); }
         
         function switchTab(target) {
@@ -737,12 +707,10 @@
                 btnWarga.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all bg-white text-emerald-700 shadow shadow-sm";
                 btnAdmin.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white hover:text-emerald-100";
                 secWarga.classList.remove('hidden'); secAdmin.classList.add('hidden');
-                document.getElementById('loading-screen').classList.add('hidden');
             } else {
                 btnAdmin.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all bg-white text-emerald-700 shadow shadow-sm";
                 btnWarga.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white hover:text-emerald-100";
                 secAdmin.classList.remove('hidden'); secWarga.classList.add('hidden');
-                document.getElementById('loading-screen').classList.add('hidden');
             }
         }
         
