@@ -169,7 +169,7 @@
         </section>
     </main>
 
-    <!-- ==================== MODAL 1: DETAIL INDIVIDU WARGA (OPTIMASI HP) ==================== -->
+    <!-- ==================== MODAL 1: DETAIL INDIVIDU WARGA ==================== -->
     <div id="detail-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm">
         <div class="bg-white w-full max-w-xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
             <div class="bg-emerald-600 text-white px-4 py-3 flex justify-between items-center flex-shrink-0">
@@ -235,11 +235,11 @@
     </div>
 
     <!-- ==================== MODAL 2: LAPORAN REKAP KLUSTER PAK RT ==================== -->
-    <div id="kluster-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 p-2 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-5xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
-            <div class="bg-teal-700 text-white px-4 py-3 flex justify-between items-center flex-shrink-0">
+    <div id="kluster-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 p-1 sm:p-2 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-5xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[96vh]">
+            <div class="bg-teal-700 text-white px-3 py-2.5 flex justify-between items-center flex-shrink-0">
                 <div>
-                    <h3 class="text-sm font-bold flex items-center gap-1.5">
+                    <h3 class="text-xs sm:text-sm font-bold flex items-center gap-1.5">
                         <span>Laporan Kluster Blok:</span> 
                         <span id="kluster-title-letter" class="bg-teal-900 px-2 py-0.5 rounded text-yellow-300 font-mono font-black text-xs">B</span>
                     </h3>
@@ -247,37 +247,38 @@
                 <button onclick="tutupLaporanKluster()" class="text-teal-100 hover:text-white text-xl font-bold p-1">&times;</button>
             </div>
             
-            <div class="bg-gray-100 px-4 py-2 border-b border-gray-200 flex flex-wrap items-center gap-2 flex-shrink-0">
-                <div class="flex items-center gap-2 bg-white p-2 rounded-xl border border-gray-200 shadow-sm text-[11px] w-full sm:w-auto">
+            <div class="bg-gray-100 px-3 py-2 border-b border-gray-200 flex flex-wrap items-center gap-2 flex-shrink-0">
+                <div class="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm text-[10px] w-full sm:w-auto">
                     <div class="flex items-center space-x-1">
                         <span class="text-gray-400">Dari:</span>
-                        <select id="kluster-bulan-mulai" onchange="renderTabelKluster()" class="border rounded text-xs p-0.5 bg-gray-50 text-gray-700 focus:outline-none">
+                        <select id="kluster-bulan-mulai" onchange="renderTabelKluster()" class="border rounded text-[11px] p-0.5 bg-gray-50 text-gray-700 focus:outline-none">
                             <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
                             <option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option>
                             <option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option>
                         </select>
-                        <select id="kluster-tahun-mulai" onchange="renderTabelKluster()" class="border rounded text-xs p-0.5 bg-gray-50 text-gray-700 font-bold focus:outline-none">
+                        <select id="kluster-tahun-mulai" onchange="renderTabelKluster()" class="border rounded text-[11px] p-0.5 bg-gray-50 text-gray-700 font-bold focus:outline-none">
                             <!-- JS Inject -->
                         </select>
                     </div>
                     <div class="flex items-center space-x-1 border-l pl-2 border-gray-200">
                         <span class="text-gray-400">s/d:</span>
-                        <select id="kluster-bulan-selesai" onchange="renderTabelKluster()" class="border rounded text-xs p-0.5 bg-gray-50 text-gray-700 focus:outline-none">
+                        <select id="kluster-bulan-selesai" onchange="renderTabelKluster()" class="border rounded text-[11px] p-0.5 bg-gray-50 text-gray-700 focus:outline-none">
                             <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
                             <option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option>
                             <option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option>
                         </select>
-                        <select id="kluster-tahun-selesai" onchange="renderTabelKluster()" class="border rounded text-xs p-0.5 bg-gray-50 text-gray-700 font-bold focus:outline-none">
+                        <select id="kluster-tahun-selesai" onchange="renderTabelKluster()" class="border rounded text-[11px] p-0.5 bg-gray-50 text-gray-700 font-bold focus:outline-none">
                             <!-- JS Inject -->
                         </select>
                     </div>
                 </div>
             </div>
 
-            <div class="p-2 overflow-auto custom-scrollbar flex-1 bg-gray-50">
-                <div class="min-w-[750px] bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <table class="w-full text-left text-[10px] border-collapse">
-                        <thead>
+            <!-- Kontainer Utama Scroll Tabel Kluster -->
+            <div class="p-1 overflow-auto custom-scrollbar flex-1 bg-gray-50">
+                <div class="inline-block min-w-full align-middle bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <table class="min-w-full text-left text-[9px] sm:text-[11px] border-collapse table-fixed">
+                        <thead id="kluster-thead-element">
                             <!-- Header Kolom Bulan Dinamis via JS -->
                         </thead>
                         <tbody id="kluster-tabel-rows" class="divide-y divide-gray-200">
@@ -286,11 +287,11 @@
                     </table>
                 </div>
             </div>
-            <div class="bg-gray-100 px-4 py-2 text-right border-t border-gray-200 flex-shrink-0 flex justify-between items-center text-[10px]">
+            <div class="bg-gray-100 px-3 py-2 text-right border-t border-gray-200 flex-shrink-0 flex justify-between items-center text-[10px]">
                 <div class="text-gray-400 font-medium">
-                    ✔ <span class="text-green-600 bg-green-50 px-1 rounded">Lunas</span> | ✘ <span class="text-red-400 bg-red-50 px-1 rounded">Belum</span>
+                    ✔ <span class="text-green-600 bg-green-50 px-1 rounded font-bold">Lunas</span> | ✘ <span class="text-red-500 bg-red-50 px-1 rounded font-bold">Belum</span>
                 </div>
-                <button onclick="tutupLaporanKluster()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-lg shadow-sm">
+                <button onclick="tutupLaporanKluster()" class="px-4 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-lg shadow-sm text-xs">
                     Tutup
                 </button>
             </div>
@@ -654,7 +655,7 @@
 
             const startVal = `${startY}-${startM}`;
             const endVal = `${endY}-${endM}`;
-            const thead = document.querySelector('#kluster-modal table thead');
+            const thead = document.getElementById('kluster-thead-element');
             const tbody = document.getElementById('kluster-tabel-rows');
             tbody.innerHTML = ''; thead.innerHTML = '';
 
@@ -677,13 +678,22 @@
                 tanggalBerjalan.setMonth(tanggalBerjalan.getMonth() + 1);
             }
 
-            let headerHtml = `
-                <tr class="bg-gray-100 border-b border-gray-200 text-gray-700 font-bold text-center uppercase">
-                    <th class="py-2 px-1 border-r border-gray-200 sticky left-0 bg-gray-100 z-10 w-14 text-center shadow-sm">Kode</th>
-                    <th class="py-2 px-2 border-r border-gray-200 sticky left-14 bg-gray-100 z-10 w-36 text-left shadow-sm">Nama Blok</th>
+            // Menerapkan lebar kolom statis keras (col-width) agar Nama Blok mendapat porsi luas di HP
+            let colgroupHtml = `
+                <colgroup>
+                    <col class="w-[50px] sm:w-[65px]">
+                    <col class="w-[145px] sm:w-[220px]">
             `;
-            urutanBulanDinamis.forEach(b => { headerHtml += `<th class="py-2 px-0.5 border-r border-gray-200 min-w-[55px] text-center text-[9px]">${b.labelSingkat}</th>`; });
-            headerHtml += `<th class="py-2 px-1 bg-emerald-50 text-emerald-800 font-extrabold w-12">Total</th></tr>`;
+            urutanBulanDinamis.forEach(() => { colgroupHtml += `<col class="w-[42px] sm:w-[55px]">`; });
+            colgroupHtml += `<col class="w-[45px] sm:w-[60px]"></colgroup>`;
+
+            let headerHtml = colgroupHtml + `
+                <tr class="bg-gray-100 border-b border-gray-200 text-gray-700 font-bold text-center uppercase text-[8px] sm:text-[10px]">
+                    <th class="py-2 px-0.5 border-r border-gray-200 sticky left-0 bg-gray-100基本 z-20 text-center shadow-sm">Kode</th>
+                    <th class="py-2 px-1 border-r border-gray-200 sticky left-[50px] sm:left-[65px] bg-gray-100 z-20 text-left shadow-sm">Nama Blok</th>
+            `;
+            urutanBulanDinamis.forEach(b => { headerHtml += `<th class="py-2 px-0.5 border-r border-gray-200 text-center">${b.labelSingkat}</th>`; });
+            headerHtml += `<th class="py-2 px-0.5 bg-emerald-50 text-emerald-800 font-black">Total</th></tr>`;
             thead.innerHTML = headerHtml;
 
             const filteredUnits = databaseBlokMaster.filter(item => item.id_kode.toUpperCase().startsWith(prefix));
@@ -691,22 +701,23 @@
 
             filteredUnits.forEach(unit => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50 text-gray-700 bg-white border-b border-gray-100 text-center text-[10px]";
+                tr.className = "hover:bg-gray-50 text-gray-700 bg-white border-b border-gray-100 text-center text-[9px] sm:text-[11px]";
+                
                 let rowHtml = `
                     <td class="py-1.5 px-0.5 border-r border-gray-200 text-center font-mono font-bold bg-gray-100 sticky left-0 z-10 shadow-sm">${unit.id_kode}</td>
-                    <td class="py-1.5 px-1.5 border-r border-gray-200 text-left font-bold bg-white sticky left-14 z-10 shadow-sm max-w-[144px] truncate">${unit.nama_blok}</td>
+                    <td class="py-1.5 px-1 border-r border-gray-200 text-left font-bold bg-white sticky left-[50px] sm:left-[65px] z-10 shadow-sm overflow-hidden truncate whitespace-nowrap max-w-[145px] sm:max-w-[220px] text-gray-900">${unit.nama_blok}</td>
                 `;
                 let lunasCount = 0;
                 urutanBulanDinamis.forEach(b => {
                     const matchTx = unit.transaksi_list.find(tx => tx.bulan_idx === b.idx);
                     if (matchTx && matchTx.lunas) {
                         lunasCount++;
-                        rowHtml += `<td class="py-1.5 px-0.5 border-r border-gray-100 bg-green-50/20 text-green-600 font-extrabold text-[9px]">✔</td>`;
+                        rowHtml += `<td class="py-1.5 px-0.5 border-r border-gray-100 bg-green-50/20 text-green-600 font-extrabold text-[10px] sm:text-xs">✔</td>`;
                     } else {
-                        rowHtml += `<td class="py-1.5 px-0.5 border-r border-gray-100 bg-red-50/5 text-red-400/80">✘</td>`;
+                        rowHtml += `<td class="py-1.5 px-0.5 border-r border-gray-100 bg-red-50/5 text-red-400 font-bold opacity-60 text-[9px] sm:text-[10px]">✘</td>`;
                     }
                 });
-                rowHtml += `<td class="py-1.5 px-0.5 text-center font-bold bg-emerald-50 text-emerald-800">${lunasCount}/${urutanBulanDinamis.length}</td>`;
+                rowHtml += `<td class="py-1.5 px-0.5 text-center font-black bg-emerald-50 text-emerald-800">${lunasCount}/${urutanBulanDinamis.length}</td>`;
                 tr.innerHTML = rowHtml; tbody.appendChild(tr);
             });
         }
