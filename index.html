@@ -44,32 +44,32 @@
 
     <!-- Header Utama Aplikasi -->
     <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-md sticky top-0 z-40">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-2">
-            <div class="flex items-center space-x-3">
-                <div class="bg-white p-2 rounded-full text-emerald-600 shadow-inner">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="max-w-6xl mx-auto px-3 py-3 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center space-x-2.5">
+                <div class="bg-white p-1.5 rounded-full text-emerald-600 shadow-inner">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-wide">IPL Bale Tirtawana</h1>
-                    <p class="text-xs text-emerald-100">Sistem Realtime Terintegrasi Google Sheets</p>
+                    <h1 class="text-lg font-bold tracking-wide">IPL Bale Tirtawana</h1>
+                    <p class="text-[10px] text-emerald-100">Sistem Realtime Terintegrasi Google Sheets</p>
                 </div>
             </div>
             <!-- Menu Tab Navigasi & Tombol Refresh Manual -->
-            <div class="flex items-center space-x-2 mt-2 sm:mt-0">
-                <button onclick="paksaRefreshDataWarga()" title="Segarkan Data Terkini" class="p-2 bg-emerald-700 hover:bg-emerald-800 rounded-lg text-white shadow transition-colors flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="flex items-center space-x-2 mt-1.5 sm:mt-0 w-full sm:w-auto justify-between sm:justify-end">
+                <button onclick="paksaRefreshDataWarga()" title="Segarkan Data Terkini" class="p-1.5 bg-emerald-700 hover:bg-emerald-800 rounded-lg text-white shadow transition-colors flex items-center justify-center text-xs font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18" />
                     </svg>
-                    <span class="text-xs font-bold ml-1 hidden sm:inline">Segarkan Data Sheets</span>
+                    <span class="ml-1">Segarkan Data</span>
                 </button>
-                <div class="flex bg-emerald-700 bg-opacity-50 p-1 rounded-lg">
-                    <button id="tab-warga-btn" onclick="switchTab('warga')" class="px-4 py-1.5 rounded-md text-sm font-medium transition-all bg-white text-emerald-700 shadow shadow-sm">
+                <div class="flex bg-emerald-700 bg-opacity-50 p-0.5 rounded-lg">
+                    <button id="tab-warga-btn" onclick="switchTab('warga')" class="px-3 py-1 rounded-md text-xs font-medium transition-all bg-white text-emerald-700 shadow-sm">
                         Pencarian Warga
                     </button>
-                    <button id="tab-admin-btn" onclick="switchTab('admin')" class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white hover:text-emerald-100">
-                        Pengaturan Database
+                    <button id="tab-admin-btn" onclick="switchTab('admin')" class="px-3 py-1 rounded-md text-xs font-medium transition-all text-white hover:text-emerald-100">
+                        Database
                     </button>
                 </div>
             </div>
@@ -77,7 +77,7 @@
     </header>
 
     <!-- Konten Utama Bodi -->
-    <main class="max-w-4xl mx-auto px-4 mt-6">
+    <main class="max-w-4xl mx-auto px-3 mt-4">
         
         <!-- Notifikasi Kustom -->
         <div id="toast-notification" class="hidden fixed bottom-5 right-5 left-5 sm:left-auto bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between space-x-4 transition-all duration-300 z-50">
@@ -86,8 +86,8 @@
         </div>
 
         <!-- Indikator Status Memuat Modern yang Fleksibel -->
-        <div id="loading-status-bar" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold mb-4 flex items-center gap-2">
-            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-700"></div>
+        <div id="loading-status-bar" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-xl text-[11px] font-semibold mb-4 flex items-center gap-2">
+            <div class="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-emerald-700"></div>
             <span>Memperbarui informasi kas terbaru secara live dari Google Sheets perumahan...</span>
         </div>
 
@@ -95,218 +95,190 @@
         <section id="section-warga" class="block space-y-4">
             
             <!-- Ringkasan Statistik Cepat -->
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Total Blok Terdata</p>
-                    <p id="stat-total-warga" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Total Blok Terdata</p>
+                    <p id="stat-total-warga" class="text-xl font-bold text-emerald-600 mt-0.5">0</p>
                 </div>
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Status Sinkronisasi</p>
-                    <p id="sync-badge-status" class="text-xs text-green-700 font-bold bg-green-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1">
-                        <span class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-                        Terhubung Otomatis & Live
-                    </p>
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-center">
+                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider mb-0.5">Status Sinkronisasi</p>
+                    <div id="sync-badge-status" class="text-[10px] text-green-700 font-bold bg-green-50 px-1.5 py-0.5 rounded inline-flex items-center gap-1 w-max">
+                        <span class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                        Terhubung Otomatis
+                    </div>
                 </div>
             </div>
 
             <!-- 1. PILIHAN PER KLUSTER BLOK -->
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div class="max-w-md">
-                    <h3 class="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <h3 class="text-[10px] font-bold text-gray-700 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                         PILIHAN PER KLUSTER BLOK
                     </h3>
-                    <select id="filter-kluster" onchange="aksiPilihKlusterRT(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
+                    <select id="filter-kluster" onchange="aksiPilihKlusterRT(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
                         <option value="">-- Pilih Kluster Huruf Di Sini (Misal: B) --</option>
                     </select>
                 </div>
             </div>
 
             <!-- 2. PANEL SELEKSI NOMOR BLOK WARGA -->
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div class="max-w-md">
-                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                         Pilih Nomor Blok Warga
                     </label>
                     <select id="filter-blok" onchange="aksiPilihBlokWarga(this)" 
-                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
                         <option value="">-- Pilih Nomor Blok Warga Di Sini --</option>
                     </select>
-                    <p class="text-[11px] text-gray-400 mt-1.5">Pilih salah satu nomor blok di atas untuk langsung memunculkan tabel rincian status pembayaran iuran warga.</p>
+                    <p class="text-[10px] text-gray-400 mt-1">Pilih nomor blok untuk memunculkan tabel rincian status pembayaran iuran.</p>
                 </div>
             </div>
 
         </section>
 
         <!-- ==================== TAB 2: PENGATURAN DATABASE (ADMIN) ==================== -->
-        <section id="section-admin" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 space-y-6">
+        <section id="section-admin" class="hidden space-y-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 space-y-4">
                 <div>
-                    <h2 class="text-lg font-bold text-gray-800">Hubungkan Link Google Sheets</h2>
-                    <p class="text-xs text-gray-500 mt-0.5">Masukkan tautan publik CSV Google Spreadsheet pengurus kas perumahan Anda di sini.</p>
+                    <h2 class="text-sm font-bold text-gray-800">Hubungkan Link Google Sheets</h2>
+                    <p class="text-[11px] text-gray-500">Ubah tautan publik CSV Google Spreadsheet pengurus kas perumahan Anda di sini.</p>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide">URL Publik CSV Google Sheets:</label>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-700 uppercase tracking-wide">URL Publik CSV Google Sheets:</label>
                     <input type="text" id="sheets-url-input" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv" 
-                           class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm">
-                    <p class="text-[11px] text-gray-400 leading-relaxed">
-                        ⚠️ **Cara Mendapatkan URL ini:** Di Google Sheets Anda, klik menu **File** &rarr; **Bagikan (Share)** &rarr; **Publikasikan ke web (Publish to web)**. Ubah pilihan dropdown *Seluruh Dokumen (Entire Document)* menjadi **Halaman Laporan Kas Anda**, dan ubah *Halaman Web (Web Page)* menjadi **Nilai Terpisah Koma (.csv)**. Klik Publikasikan, lalu salin link-nya dan tempel di atas.
-                    </p>
+                           class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm">
                 </div>
 
-                <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-3">
-                    <button onclick="simpanDanMuatUlangURLSheets()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow transition-all">
+                <div class="pt-3 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-2">
+                    <button onclick="simpanDanMuatUlangURLSheets()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow transition-all">
                         Simpan & Hubungkan Database Baru
                     </button>
-                    <button onclick="resetKeUrlSimulasi()" class="px-4 py-2 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors whitespace-nowrap">
-                        Bersihkan Cache & Reset Tampilan
+                    <button onclick="resetKeUrlSimulasi()" class="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors whitespace-nowrap">
+                        Reset Cache Data
                     </button>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- ==================== MODAL 1: DETAIL INDIVIDU WARGA ==================== -->
-    <div id="detail-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in">
-        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="bg-emerald-600 text-white px-5 py-3.5 flex justify-between items-center flex-shrink-0">
+    <!-- ==================== MODAL 1: DETAIL INDIVIDU WARGA (OPTIMASI HP) ==================== -->
+    <div id="detail-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            <div class="bg-emerald-600 text-white px-4 py-3 flex justify-between items-center flex-shrink-0">
                 <div>
-                    <div class="flex items-center space-x-2">
-                        <span id="modal-id-kode" class="bg-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded text-emerald-200">KODE</span>
-                        <p class="text-xs text-emerald-100 font-medium">Bale Tirtawana Histori Laporan IPL</p>
+                    <div class="flex items-center space-x-1.5">
+                        <span id="modal-id-kode" class="bg-emerald-800 text-[9px] font-bold px-1.5 py-0.5 rounded text-emerald-200">KODE</span>
+                        <p class="text-[10px] text-emerald-100 font-medium">Histori Laporan IPL</p>
                     </div>
-                    <h3 id="modal-blok-title" class="text-base font-bold mt-0.5">Nama Blok</h3>
+                    <h3 id="modal-blok-title" class="text-sm font-bold mt-0.5 truncate max-w-[280px] sm:max-w-md">Nama Blok</h3>
                 </div>
                 <button onclick="closeModal()" class="text-emerald-100 hover:text-white text-xl font-bold p-1">&times;</button>
             </div>
-            <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex-shrink-0">
-                <p class="text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+            
+            <div class="bg-gray-50 px-4 py-2.5 border-b border-gray-200 flex-shrink-0">
+                <div class="flex items-center gap-1 text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Filter Rentang Waktu Bulan Tagihan:
-                </p>
-                <div class="flex flex-wrap items-center gap-2 bg-white p-2 rounded-xl border border-gray-200">
-                    <div class="flex items-center space-x-1.5">
-                        <span class="text-xs text-gray-500 font-medium">Dari</span>
+                    Filter Rentang Waktu Bulan:
+                </div>
+                <div class="flex items-center justify-between gap-1.5 bg-white p-2 rounded-xl border border-gray-200 shadow-sm flex-wrap sm:flex-nowrap">
+                    <div class="flex items-center space-x-1 w-full sm:w-auto justify-between sm:justify-start">
+                        <span class="text-[10px] text-gray-400 font-medium">Dari</span>
                         <input type="date" id="modal-tgl-mulai" onchange="refreshModalTable()"
-                               class="border border-gray-300 rounded px-2 py-0.5 text-xs font-bold font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500 text-gray-700">
+                               class="border border-gray-300 rounded px-1.5 py-0.5 text-[11px] font-bold font-mono text-gray-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
                     </div>
-                    <div class="flex items-center space-x-1.5">
-                        <span class="text-xs text-gray-500 font-medium">s/d</span>
+                    <div class="flex items-center space-x-1 w-full sm:w-auto justify-between sm:justify-start">
+                        <span class="text-[10px] text-gray-400 font-medium">s/d</span>
                         <input type="date" id="modal-tgl-selesai" onchange="refreshModalTable()"
-                               class="border border-gray-300 rounded px-2 py-0.5 text-xs font-bold font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500 text-gray-700">
+                               class="border border-gray-300 rounded px-1.5 py-0.5 text-[11px] font-bold font-mono text-gray-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
                     </div>
-                    <button onclick="resetModalToCurrentYear()" class="text-[10px] text-emerald-600 hover:text-emerald-700 font-bold ml-auto bg-emerald-50 px-2 py-0.5 rounded">
+                    <button onclick="resetModalToCurrentYear()" class="text-[9px] text-emerald-600 hover:text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded w-full sm:w-auto mt-1 sm:mt-0 text-center">
                         Tahun Ini
                     </button>
                 </div>
             </div>
-            <div class="p-4 overflow-y-auto custom-scrollbar flex-1">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="border-b-2 border-gray-200 text-gray-500 font-bold uppercase tracking-wider text-[11px]">
-                                <th class="py-2 px-2">Bulan Tagihan</th>
-                                <th class="py-2 px-2">Tgl Terima</th>
-                                <th class="py-2 px-2 text-right">Pembayaran</th>
-                                <th class="py-2 px-2 text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="modal-table-rows" class="divide-y divide-gray-100">
-                            <!-- Injeksi Dinamis -->
-                        </tbody>
-                    </table>
-                </div>
+            
+            <div class="p-2 overflow-y-auto custom-scrollbar flex-1 bg-white">
+                <table class="w-full text-left border-collapse table-fixed">
+                    <thead>
+                        <tr class="border-b border-gray-200 text-gray-400 font-bold uppercase text-[9px] tracking-wider bg-gray-50/50">
+                            <th class="py-1.5 px-2 w-[32%] text-left">Bulan</th>
+                            <th class="py-1.5 px-1 w-[26%] text-left">Tgl Terima</th>
+                            <th class="py-1.5 px-1 w-[24%] text-right">Rupiah</th>
+                            <th class="py-1.5 px-2 w-[18%] text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-table-rows" class="divide-y divide-gray-100">
+                        <!-- Injeksi Dinamis -->
+                    </tbody>
+                </table>
                 <div id="modal-empty-rows" class="hidden text-center py-6 text-gray-400 text-xs">
-                    Tidak ada bulan tagihan yang masuk dalam rentang filter tanggal di atas.
+                    Tidak ada bulan tagihan yang masuk rentang saring.
                 </div>
             </div>
-            <div class="bg-gray-50 px-5 py-2.5 text-right border-t border-gray-100 flex-shrink-0">
+            
+            <div class="bg-gray-50 px-4 py-2 border-t border-gray-100 flex-shrink-0 flex justify-end">
                 <button onclick="closeModal()" class="px-4 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-semibold rounded-lg transition-colors">
-                    Tutup Tampilan
+                    Tutup
                 </button>
             </div>
         </div>
     </div>
 
     <!-- ==================== MODAL 2: LAPORAN REKAP KLUSTER PAK RT ==================== -->
-    <div id="kluster-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm animate-fade-in">
-        <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
-            <div class="bg-teal-700 text-white px-5 py-3.5 flex justify-between items-center flex-shrink-0">
+    <div id="kluster-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center z-50 p-2 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-5xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
+            <div class="bg-teal-700 text-white px-4 py-3 flex justify-between items-center flex-shrink-0">
                 <div>
-                    <h3 class="text-base font-bold flex items-center gap-2">
-                        <span>Laporan Sebaran Kas Lunas Kluster Blok:</span> 
-                        <span id="kluster-title-letter" class="bg-teal-900 px-2.5 py-0.5 rounded text-yellow-300 font-mono font-black text-sm">B</span>
+                    <h3 class="text-sm font-bold flex items-center gap-1.5">
+                        <span>Laporan Kluster Blok:</span> 
+                        <span id="kluster-title-letter" class="bg-teal-900 px-2 py-0.5 rounded text-yellow-300 font-mono font-black text-xs">B</span>
                     </h3>
-                    <p class="text-[11px] text-teal-100 mt-0.5">Matriks rekapitulasi unit warga berawalan kode huruf terkait secara terpisah</p>
                 </div>
-                <button onclick="tutupLaporanKluster()" class="text-teal-100 hover:text-white text-2xl font-bold p-1">&times;</button>
+                <button onclick="tutupLaporanKluster()" class="text-teal-100 hover:text-white text-xl font-bold p-1">&times;</button>
             </div>
             
-            <div class="bg-gray-100 px-5 py-3 border-b border-gray-200 flex flex-wrap items-center gap-3 flex-shrink-0">
-                <label class="text-xs text-gray-700 font-bold uppercase tracking-wider flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-teal-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Saring Rentang Waktu Laporan:
-                </label>
-                <div class="flex flex-wrap items-center gap-4 bg-white p-2.5 rounded-xl border border-gray-200 shadow-sm">
-                    <div class="flex items-center space-x-1.5 sm:border-r sm:border-gray-200 sm:pr-3">
-                        <span class="text-xs text-gray-500 font-medium">Dari:</span>
-                        <select id="kluster-bulan-mulai" onchange="renderTabelKluster()" class="border border-gray-300 rounded px-2 py-0.5 text-xs font-semibold bg-gray-50 text-gray-700 focus:outline-none focus:ring-1 focus:ring-teal-500">
-                            <option value="01">Januari</option>
-                            <option value="02">Februari</option>
-                            <option value="03">Maret</option>
-                            <option value="04">April</option>
-                            <option value="05">Mei</option>
-                            <option value="06">Juni</option>
-                            <option value="07">Juli</option>
-                            <option value="08">Agustus</option>
-                            <option value="09">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
+            <div class="bg-gray-100 px-4 py-2 border-b border-gray-200 flex flex-wrap items-center gap-2 flex-shrink-0">
+                <div class="flex items-center gap-2 bg-white p-2 rounded-xl border border-gray-200 shadow-sm text-[11px] w-full sm:w-auto">
+                    <div class="flex items-center space-x-1">
+                        <span class="text-gray-400">Dari:</span>
+                        <select id="kluster-bulan-mulai" onchange="renderTabelKluster()" class="border rounded text-xs p-0.5 bg-gray-50 text-gray-700 focus:outline-none">
+                            <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
+                            <option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option>
+                            <option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option>
                         </select>
-                        <select id="kluster-tahun-mulai" onchange="renderTabelKluster()" class="border border-gray-300 rounded px-2 py-0.5 text-xs font-bold text-gray-700 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-teal-500">
+                        <select id="kluster-tahun-mulai" onchange="renderTabelKluster()" class="border rounded text-xs p-0.5 bg-gray-50 text-gray-700 font-bold focus:outline-none">
                             <!-- JS Inject -->
                         </select>
                     </div>
-                    
-                    <div class="flex items-center space-x-1.5">
-                        <span class="text-xs text-gray-500 font-medium">s/d:</span>
-                        <select id="kluster-bulan-selesai" onchange="renderTabelKluster()" class="border border-gray-300 rounded px-2 py-0.5 text-xs font-semibold bg-gray-50 text-gray-700 focus:outline-none focus:ring-1 focus:ring-teal-500">
-                            <option value="01">Januari</option>
-                            <option value="02">Februari</option>
-                            <option value="03">Maret</option>
-                            <option value="04">April</option>
-                            <option value="05">Mei</option>
-                            <option value="06">Juni</option>
-                            <option value="07">Juli</option>
-                            <option value="08">Agustus</option>
-                            <option value="09">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
+                    <div class="flex items-center space-x-1 border-l pl-2 border-gray-200">
+                        <span class="text-gray-400">s/d:</span>
+                        <select id="kluster-bulan-selesai" onchange="renderTabelKluster()" class="border rounded text-xs p-0.5 bg-gray-50 text-gray-700 focus:outline-none">
+                            <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
+                            <option value="05">Mei</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Agu</option>
+                            <option value="09">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Des</option>
                         </select>
-                        <select id="kluster-tahun-selesai" onchange="renderTabelKluster()" class="border border-gray-300 rounded px-2 py-0.5 text-xs font-bold text-gray-700 bg-gray-50 focus:outline-none focus:ring-1 focus:ring-teal-500">
+                        <select id="kluster-tahun-selesai" onchange="renderTabelKluster()" class="border rounded text-xs p-0.5 bg-gray-50 text-gray-700 font-bold focus:outline-none">
                             <!-- JS Inject -->
                         </select>
                     </div>
                 </div>
             </div>
 
-            <div class="p-4 overflow-auto custom-scrollbar flex-1 bg-gray-50">
-                <div class="min-w-[900px] bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <table class="w-full text-left text-[11px] border-collapse">
+            <div class="p-2 overflow-auto custom-scrollbar flex-1 bg-gray-50">
+                <div class="min-w-[750px] bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <table class="w-full text-left text-[10px] border-collapse">
                         <thead>
-                            <!-- Header Kolom Bulan Di-generate Dinamis via JS -->
+                            <!-- Header Kolom Bulan Dinamis via JS -->
                         </thead>
                         <tbody id="kluster-tabel-rows" class="divide-y divide-gray-200">
                             <!-- Injeksi Baris Kolektif Per Huruf via JS -->
@@ -314,12 +286,12 @@
                     </table>
                 </div>
             </div>
-            <div class="bg-gray-100 px-5 py-3 text-right border-t border-gray-200 flex-shrink-0 flex justify-between items-center">
-                <div class="text-[10px] text-gray-500 font-medium">
-                    💡 Keterangan: <span class="text-green-600 font-bold bg-green-50 px-1 rounded">✔ Lunas</span> | <span class="text-red-400 font-bold bg-red-50 px-1 rounded">✘ Belum Bayar</span>
+            <div class="bg-gray-100 px-4 py-2 text-right border-t border-gray-200 flex-shrink-0 flex justify-between items-center text-[10px]">
+                <div class="text-gray-400 font-medium">
+                    ✔ <span class="text-green-600 bg-green-50 px-1 rounded">Lunas</span> | ✘ <span class="text-red-400 bg-red-50 px-1 rounded">Belum</span>
                 </div>
-                <button onclick="tutupLaporanKluster()" class="px-4 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold rounded-lg transition-colors shadow-sm">
-                    Tutup Dokumen Rekap
+                <button onclick="tutupLaporanKluster()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-lg shadow-sm">
+                    Tutup
                 </button>
             </div>
         </div>
@@ -378,7 +350,7 @@
                 showToast("Memaksa browser HP membersihkan cache & mendownload data terbaru...");
                 ambilDataDariGoogleSheets(hancurkanCacheUrl);
             } else {
-                showToast("Tautan Google Sheets belum dikonfigurasi di tab admin.", true);
+                showToast("Tautan Google Sheets belum terpasang di baris kode.", true);
             }
         }
 
@@ -389,11 +361,11 @@
             
             let currentUrl = localStorage.getItem(SHEETS_URL_KEY) || "";
             if (currentUrl !== "") {
-                document.getElementById('sync-badge-status').className = "text-xs text-green-700 font-bold bg-green-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1";
-                document.getElementById('sync-badge-status').innerHTML = "<span class='h-2 w-2 rounded-full bg-green-500 animate-pulse'></span> Link Google Sheets Terpasang";
+                document.getElementById('sync-badge-status').className = "text-[10px] text-green-700 font-bold bg-green-50 px-1.5 py-0.5 rounded inline-flex items-center gap-1";
+                document.getElementById('sync-badge-status').innerHTML = "<span class='h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse'></span> Sheets Terhubung";
             } else {
-                document.getElementById('sync-badge-status').className = "text-xs text-amber-700 font-bold bg-amber-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1";
-                document.getElementById('sync-badge-status').innerHTML = "⚠️ Siap Dihubungkan ke Link Excel Google Sheets Anda";
+                document.getElementById('sync-badge-status').className = "text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded inline-flex items-center gap-1";
+                document.getElementById('sync-badge-status').innerHTML = "⚠️ Menunggu Tautan Tanam";
             }
         }
 
@@ -425,7 +397,7 @@
                             prosesTeksCSV(csv);
                         })
                         .catch(e => {
-                            showToast("Gagal menyinkronkan data terbaru. Menampilkan data tersimpan.", true);
+                            showToast("Gagal menyinkronkan data terbaru. Menampilkan data cadangan.", true);
                             bukaDataFallbackAwal();
                         });
                 });
@@ -519,9 +491,9 @@
                 if(arrRes.length > 0) {
                     databaseBlokMaster = arrRes;
                     matangkanDatabaseKeUI();
-                    document.getElementById('sync-badge-status').className = "text-xs text-green-700 font-bold bg-green-50 px-2 py-1 rounded mt-2 inline-flex items-center gap-1";
-                    document.getElementById('sync-badge-status').innerHTML = "<span class='h-2 w-2 rounded-full bg-green-500 animate-pulse'></span> Link Google Sheets Terhubung & Terupdate";
-                    showToast(`Sukses sinkronisasi! Memuat data ${databaseBlokMaster.length} unit warga.`);
+                    document.getElementById('sync-badge-status').className = "text-[10px] text-green-700 font-bold bg-green-50 px-1.5 py-0.5 rounded inline-flex items-center gap-1";
+                    document.getElementById('sync-badge-status').innerHTML = "<span class='h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse'></span> Google Sheets Sinkron";
+                    showToast(`Sukses memperbarui data ${databaseBlokMaster.length} unit warga.`);
                 }
             } catch(e) {
                 console.error(e);
@@ -586,7 +558,7 @@
 
         function bukaModalDetail(item) {
             blokAktifDiModal = item;
-            document.getElementById('modal-id-kode').textContent = `ID KODE: ${item.id_kode}`;
+            document.getElementById('modal-id-kode').textContent = `ID: ${item.id_kode}`;
             document.getElementById('modal-blok-title').textContent = item.nama_blok;
             resetModalToCurrentYear();
             document.getElementById('detail-modal').classList.remove('hidden');
@@ -616,14 +588,23 @@
             blokAktifDiModal.transaksi_list.forEach(tx => {
                 if (tx.bulan_idx < startYearMonth || tx.bulan_idx > endYearMonth) return;
                 barisTercetak++;
+                
+                let tglPerangkatHP = tx.tgl_terima;
+                if(tglPerangkatHP && tglPerangkatHP.length > 9) {
+                    const kepingan = tglPerangkatHP.split(" ");
+                    if(kepingan.length === 3) {
+                        tglPerangkatHP = `${kepingan[0]} ${kepingan[1]} ${kepingan[2].substring(2)}`;
+                    }
+                }
+
                 const tr = document.createElement('tr');
-                tr.className = tx.lunas ? "hover:bg-gray-50 bg-green-50/20 text-gray-900 text-xs" : "hover:bg-gray-50 text-gray-400 bg-gray-50/10 text-xs";
+                tr.className = tx.lunas ? "hover:bg-gray-50 bg-green-50/20 text-gray-900" : "hover:bg-gray-50 text-gray-400 bg-gray-50/10";
                 tr.innerHTML = `
-                    <td class="py-1.5 px-2 font-medium ${tx.lunas ? 'text-gray-900 font-semibold' : 'text-gray-400'}">${tx.label_bulan}</td>
-                    <td class="py-1.5 px-2 font-mono ${tx.lunas ? 'text-gray-700 font-semibold' : 'text-gray-400'}">${tx.tgl_terima}</td>
-                    <td class="py-1.5 px-2 text-right font-mono font-semibold ${tx.lunas ? 'text-emerald-700' : 'text-gray-400'}">${formatRupiah(tx.nominal)}</td>
-                    <td class="py-1.5 px-2 text-center">
-                        ${tx.lunas ? `<span class="bg-green-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">LUNAS</span>` : `<span class="bg-gray-200 text-gray-400 text-[9px] font-bold px-1.5 py-0.5 rounded">BELUM BAYAR</span>`}
+                    <td class="py-1 px-2 text-[10px] sm:text-xs font-semibold overflow-hidden truncate whitespace-nowrap text-left ${tx.lunas ? 'text-gray-900' : 'text-gray-400'}">${tx.label_bulan}</td>
+                    <td class="py-1 px-1 text-[10px] sm:text-xs font-mono overflow-hidden truncate whitespace-nowrap text-left ${tx.lunas ? 'text-gray-700' : 'text-gray-400'}">${tglPerangkatHP}</td>
+                    <td class="py-1 px-1 text-[10px] sm:text-xs font-mono font-bold text-right ${tx.lunas ? 'text-emerald-700' : 'text-gray-400'}">${formatRupiah(tx.nominal)}</td>
+                    <td class="py-1 px-2 text-center whitespace-nowrap">
+                        ${tx.lunas ? `<span class="bg-green-600 text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded shadow-sm">LUNAS</span>` : `<span class="bg-gray-200 text-gray-400 text-[8px] font-bold px-1 py-0.5 rounded">BELUM</span>`}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -678,7 +659,7 @@
             tbody.innerHTML = ''; thead.innerHTML = '';
 
             if (startVal > endVal) {
-                tbody.innerHTML = `<tr><td colspan="3" class="py-6 text-center text-gray-400 text-xs bg-white">Rentang bulan terbalik.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-center text-gray-400 text-xs bg-white">Rentang waktu terbalik.</td></tr>`;
                 return;
             }
 
@@ -698,11 +679,11 @@
 
             let headerHtml = `
                 <tr class="bg-gray-100 border-b border-gray-200 text-gray-700 font-bold text-center uppercase">
-                    <th class="py-2.5 px-2 border-r border-gray-200 sticky left-0 bg-gray-100 z-10 w-16 text-center shadow-sm">Kode</th>
-                    <th class="py-2.5 px-2 border-r border-gray-200 sticky left-16 bg-gray-100 z-10 w-44 text-left shadow-sm">Nama Blok Pelanggan</th>
+                    <th class="py-2 px-1 border-r border-gray-200 sticky left-0 bg-gray-100 z-10 w-14 text-center shadow-sm">Kode</th>
+                    <th class="py-2 px-2 border-r border-gray-200 sticky left-14 bg-gray-100 z-10 w-36 text-left shadow-sm">Nama Blok</th>
             `;
-            urutanBulanDinamis.forEach(b => { headerHtml += `<th class="py-2.5 px-1 border-r border-gray-200 min-w-[65px] text-center text-[10px]">${b.labelSingkat}</th>`; });
-            headerHtml += `<th class="py-2.5 px-2 bg-emerald-50 text-emerald-800 font-extrabold w-16">Total</th></tr>`;
+            urutanBulanDinamis.forEach(b => { headerHtml += `<th class="py-2 px-0.5 border-r border-gray-200 min-w-[55px] text-center text-[9px]">${b.labelSingkat}</th>`; });
+            headerHtml += `<th class="py-2 px-1 bg-emerald-50 text-emerald-800 font-extrabold w-12">Total</th></tr>`;
             thead.innerHTML = headerHtml;
 
             const filteredUnits = databaseBlokMaster.filter(item => item.id_kode.toUpperCase().startsWith(prefix));
@@ -710,22 +691,22 @@
 
             filteredUnits.forEach(unit => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50 text-gray-700 bg-white border-b border-gray-100 text-center text-xs";
+                tr.className = "hover:bg-gray-50 text-gray-700 bg-white border-b border-gray-100 text-center text-[10px]";
                 let rowHtml = `
-                    <td class="py-2 px-1 border-r border-gray-200 text-center font-mono font-bold bg-gray-100 sticky left-0 z-10 shadow-sm">${unit.id_kode}</td>
-                    <td class="py-2 px-2 border-r border-gray-200 text-left font-bold bg-white sticky left-16 z-10 shadow-sm max-w-[176px] truncate">${unit.nama_blok}</td>
+                    <td class="py-1.5 px-0.5 border-r border-gray-200 text-center font-mono font-bold bg-gray-100 sticky left-0 z-10 shadow-sm">${unit.id_kode}</td>
+                    <td class="py-1.5 px-1.5 border-r border-gray-200 text-left font-bold bg-white sticky left-14 z-10 shadow-sm max-w-[144px] truncate">${unit.nama_blok}</td>
                 `;
                 let lunasCount = 0;
                 urutanBulanDinamis.forEach(b => {
                     const matchTx = unit.transaksi_list.find(tx => tx.bulan_idx === b.idx);
                     if (matchTx && matchTx.lunas) {
                         lunasCount++;
-                        rowHtml += `<td class="py-2 px-0.5 border-r border-gray-100 bg-green-50/20 text-green-600 font-extrabold">✔</td>`;
+                        rowHtml += `<td class="py-1.5 px-0.5 border-r border-gray-100 bg-green-50/20 text-green-600 font-extrabold text-[9px]">✔</td>`;
                     } else {
-                        rowHtml += `<td class="py-2 px-0.5 border-r border-gray-100 bg-red-50/5 text-red-400">✘</td>`;
+                        rowHtml += `<td class="py-1.5 px-0.5 border-r border-gray-100 bg-red-50/5 text-red-400/80">✘</td>`;
                     }
                 });
-                rowHtml += `<td class="py-2 px-1 text-center font-bold bg-emerald-50 text-emerald-800">${lunasCount}/${urutanBulanDinamis.length}</td>`;
+                rowHtml += `<td class="py-1.5 px-0.5 text-center font-bold bg-emerald-50 text-emerald-800">${lunasCount}/${urutanBulanDinamis.length}</td>`;
                 tr.innerHTML = rowHtml; tbody.appendChild(tr);
             });
         }
@@ -734,7 +715,7 @@
             const url = document.getElementById('sheets-url-input').value.trim();
             if (!url) { showToast("Masukkan link URL yang valid!", true); return; }
             if (url.includes("/edit") || !url.includes("output=csv")) {
-                showToast("Gagal: Link harus berupa link publik CSV (berakhiran output=csv)!", true);
+                showToast("Gagal: Tautan harus berupa link publik CSV (berakhiran output=csv)!", true);
                 return;
             }
             localStorage.clear(); 
@@ -746,7 +727,7 @@
             localStorage.clear();
             document.getElementById('sheets-url-input').value = "";
             bukaDataFallbackAwal();
-            showToast("Cache dibersihkan. Memuat ulang database...");
+            showToast("Cache berhasil dibersihkan.");
         }
 
         function formatRupiah(angka) { if (!angka) return "0"; return Number(angka).toLocaleString('id-ID'); }
@@ -757,12 +738,12 @@
             const btnWarga = document.getElementById('tab-warga-btn'); const btnAdmin = document.getElementById('tab-admin-btn');
             const secWarga = document.getElementById('section-warga'); const secAdmin = document.getElementById('section-admin');
             if (target === 'warga') {
-                btnWarga.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all bg-white text-emerald-700 shadow shadow-sm";
-                btnAdmin.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white hover:text-emerald-100";
+                btnWarga.className = "px-3 py-1 rounded-md text-xs font-medium transition-all bg-white text-emerald-700 shadow-sm";
+                btnAdmin.className = "px-3 py-1 rounded-md text-xs font-medium transition-all text-white hover:text-emerald-100";
                 secWarga.classList.remove('hidden'); secAdmin.classList.add('hidden');
             } else {
-                btnAdmin.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all bg-white text-emerald-700 shadow shadow-sm";
-                btnWarga.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all text-white hover:text-emerald-100";
+                btnAdmin.className = "px-3 py-1 rounded-md text-xs font-medium transition-all bg-white text-emerald-700 shadow-sm";
+                btnWarga.className = "px-3 py-1 rounded-md text-xs font-medium transition-all text-white hover:text-emerald-100";
                 secAdmin.classList.remove('hidden'); secWarga.classList.add('hidden');
             }
         }
