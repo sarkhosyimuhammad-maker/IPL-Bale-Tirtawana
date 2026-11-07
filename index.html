@@ -316,7 +316,6 @@
     <script>
         const SHEETS_URL_KEY = 'BALE_TIRTAWANA_GOOGLE_SHEETS_CSV_URL';
         
-        // Data Fallback awal instan agar antarmuka tidak membeku di awal
         const simulasiLokalData = [
             {
                 "id_kode": "B-001",
@@ -342,14 +341,18 @@
             // =========================================================================
             const DEFAULT_SHEETS_URL = ""; 
 
-            // 1. Jalankan tampilan dasar
+            // 1. Jalankan tampilan cadangan
             bukaDataFallbackAwal();
 
-            // 2. Ambil dari memori lokal HP atau ambil dari link default di atas jika memori HP kosong
+            // LOGIKA PAKSA BARU: Jika admin mengisi DEFAULT_SHEETS_URL di dalam kode,
+            // maka link ini WAJIB selalu diutamakan menggantikan memori kosong lama di HP.
             let savedUrl = localStorage.getItem(SHEETS_URL_KEY);
-            if (!savedUrl && DEFAULT_SHEETS_URL !== "") {
-                savedUrl = DEFAULT_SHEETS_URL;
-                localStorage.setItem(SHEETS_URL_KEY, DEFAULT_SHEETS_URL);
+            
+            if (DEFAULT_SHEETS_URL !== "") {
+                if (!savedUrl || savedUrl !== DEFAULT_SHEETS_URL) {
+                    savedUrl = DEFAULT_SHEETS_URL;
+                    localStorage.setItem(SHEETS_URL_KEY, DEFAULT_SHEETS_URL);
+                }
             }
 
             if (savedUrl) {
@@ -532,14 +535,16 @@
             });
         }
 
+        // Dropdown Warga
         function aksiPilihBlokWarga(element) {
             const idKode = element.value;
             if (!idKode) return;
-            const wargaTerpilled = databaseBlokMaster.find(item => item.id_kode === idKode);
-            if (wargaTerpilled) bukaModalDetail(wargaTerpilled);
+            const wargaTerpilih = databaseBlokMaster.find(item => item.id_kode === idKode);
+            if (wargaTerpilih) bukaModalDetail(wargaTerpilih);
             element.value = "";
         }
 
+        // Dropdown Kluster
         function aksiPilihKlusterRT(element) {
             const prefix = element.value;
             if (!prefix) return;
