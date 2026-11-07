@@ -72,7 +72,7 @@
             <button onclick="dismissToast()" class="text-gray-400 hover:text-white font-bold text-lg">&times;</button>
         </div>
 
-        <!-- Indikator Status Memuat yang Fleksibel (Tidak Mengunci Tampilan) -->
+        <!-- Indikator Status Memuat yang Fleksibel -->
         <div id="loading-status-bar" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold mb-4 flex items-center gap-2">
             <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-700"></div>
             <span>Memperbarui informasi kas terbaru secara live dari Google Sheets perumahan...</span>
@@ -316,7 +316,6 @@
     <script>
         const SHEETS_URL_KEY = 'BALE_TIRTAWANA_GOOGLE_SHEETS_CSV_URL';
         
-        // Data Fallback awal agar halaman langsung terbuka sempurna
         const simulasiLokalData = [
             {
                 "id_kode": "B-001",
@@ -335,9 +334,7 @@
         let databaseBlokMaster = [];
         let blokAktifDiModal = null;
 
-        // Inisialisasi awal bebas kunci loading blocker
         window.onload = function() {
-            // Muat data simulasi instan agar tombol menu dan dropdown langsung AKTIF dan bisa diklik bebas
             bukaDataFallbackAwal();
 
             const savedUrl = localStorage.getItem(SHEETS_URL_KEY);
@@ -358,7 +355,6 @@
         function ambilDataDariGoogleSheets(url) {
             document.getElementById('loading-status-bar').classList.remove('hidden');
             
-            // Mengoptimalkan pemetaan url dengan auto proxy guna memecah pembatasan lokal CORS
             let finalUrl = url;
             if (window.location.origin.includes("google") || window.location.href.includes("ai-gateway") || !window.location.origin.startsWith("http")) {
                 finalUrl = "https://allorigins.win" + encodeURIComponent(url);
@@ -374,7 +370,6 @@
                 })
                 .catch(err => {
                     console.error(err);
-                    // Jalur alternatif proxy kedua jika cadangan pertama sibuk
                     let altUrl = "https://corsproxy.io?" + encodeURIComponent(url);
                     fetch(altUrl)
                         .then(r => r.text())
