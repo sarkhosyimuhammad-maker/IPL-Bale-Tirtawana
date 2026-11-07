@@ -72,7 +72,7 @@
             <button onclick="dismissToast()" class="text-gray-400 hover:text-white font-bold text-lg">&times;</button>
         </div>
 
-        <!-- Indikator Status Memuat yang Fleksibel -->
+        <!-- Indikator Status Memuat Modern yang Fleksibel -->
         <div id="loading-status-bar" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs font-semibold mb-4 flex items-center gap-2">
             <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-700"></div>
             <span>Memperbarui informasi kas terbaru secara live dari Google Sheets perumahan...</span>
@@ -106,7 +106,7 @@
                         PILIHAN PER KLUSTER BLOK
                     </h3>
                     <select id="filter-kluster" onchange="aksiPilihKlusterRT(this)" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
-                        <!-- Diisi via JS otomatis -->
+                        <option value="">-- Pilih Kluster Huruf Di Sini (Misal: B) --</option>
                     </select>
                 </div>
             </div>
@@ -316,6 +316,7 @@
     <script>
         const SHEETS_URL_KEY = 'BALE_TIRTAWANA_GOOGLE_SHEETS_CSV_URL';
         
+        // Data Fallback awal instan agar antarmuka tidak membeku di awal
         const simulasiLokalData = [
             {
                 "id_kode": "B-001",
@@ -334,9 +335,12 @@
         let databaseBlokMaster = [];
         let blokAktifDiModal = null;
 
+        // Lifecycle Inisialisasi Baru: Menu atas dijamin AKTIF seketika sejak awal!
         window.onload = function() {
+            // 1. Muat basis data cadangan agar tombol dropdown & menu navigasi bisa diklik langsung
             bukaDataFallbackAwal();
 
+            // 2. Ambil data asli Sheets secara asinkron di belakang layar tanpa mengunci tombol klik
             const savedUrl = localStorage.getItem(SHEETS_URL_KEY);
             if (savedUrl) {
                 document.getElementById('sheets-url-input').value = savedUrl;
@@ -375,7 +379,7 @@
                         .then(r => r.text())
                         .then(csv => prosesTeksCSV(csv))
                         .catch(e => {
-                            showToast("Koneksi eksternal sheets terhambat CORS browser lokal.", false);
+                            showToast("Koneksi eksternal sheets dihambat keamanan lokal browser.", false);
                             document.getElementById('loading-status-bar').classList.add('hidden');
                         });
                 });
@@ -488,6 +492,7 @@
 
         function initDropdownBlok() {
             const select = document.getElementById('filter-blok');
+            if(!select) return;
             select.innerHTML = '<option value="">-- Pilih Nomor Blok Warga Di Sini --</option>';
             databaseBlokMaster.forEach(item => {
                 const opt = document.createElement('option');
@@ -499,6 +504,7 @@
 
         function initDropdownKluster() {
             const select = document.getElementById('filter-kluster');
+            if(!select) return;
             select.innerHTML = '<option value="">-- Pilih Kluster Huruf Di Sini (Misal: B) --</option>';
             
             let setPrefix = new Set();
@@ -711,6 +717,7 @@
         
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast-notification');
+            if(!toast) return;
             document.getElementById('toast-message').textContent = message;
             toast.className = `fixed bottom-5 right-5 left-5 sm:left-auto ${isError ? 'bg-red-600' : 'bg-gray-900'} text-white px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between space-x-4 z-50`;
             toast.classList.remove('hidden'); setTimeout(() => { toast.classList.add('hidden'); }, 4000);
