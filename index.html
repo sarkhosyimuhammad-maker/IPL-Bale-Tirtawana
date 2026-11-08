@@ -149,7 +149,7 @@
                             </label>
                             <button onclick="toggleDropdownKustom('menu-tahap1-warga')" id="btn-tahap1-warga" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium text-left flex justify-between items-center shadow-sm transition-all focus:ring-2 focus:ring-emerald-500">
                                 <span id="label-tahap1-warga">-- Pilih Kluster Terlebih Dahulu --</span>
-                                <svg xmlns="http://www.w3.org/2000/xl" class="h-3 w-3 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                             </button>
                             <div id="menu-tahap1-warga" class="hidden absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-20 dropdown-menu-kustom custom-scrollbar divide-y divide-gray-50">
                                 <!-- Diisi via JS -->
@@ -445,7 +445,6 @@
                 });
         }
 
-        // ==================== PENYEMPURNAAN MUTLAK: PARSER PENGHANCUR SPASI LIAR & KOMPATIBILITAS HURUFP / KOMA DESIMAL ====================
         function prosesTeksCSV(text) {
             try {
                 if(!text || text.trim().length === 0) return;
@@ -477,7 +476,6 @@
                     const rowData = lines[r];
                     if (!rowData || rowData.length < 3) continue;
 
-                    // Cuci bersih semua teks kolom dari spasi liar di ujung-ujung sel (.trim())
                     const colA_Kode  = rowData[0] ? rowData[0].toString().trim() : "";
                     const colB_Blok  = rowData[1] ? rowData[1].toString().trim() : "";
                     const colC_Bulan = rowData[2] ? rowData[2].toString().trim() : "";
@@ -486,7 +484,6 @@
 
                     if (!colA_Kode || !colC_Bulan) continue;
                     
-                    // Proteksi ganda mengabaikan baris header teratas
                     let bersihKode = colA_Kode.toLowerCase().replace(/[^a-z0-9]/g, "");
                     let bersihBulan = colC_Bulan.toLowerCase().replace(/[^a-z0-9]/g, "");
                     if (bersihBulan.includes("faktur") || bersihKode.includes("kode") || bersihKode === "no") continue;
@@ -499,7 +496,6 @@
                         };
                     }
 
-                    // Pemecah spasi dinamis yang menoleransi spasi ganda tak sengaja di Google Sheets
                     const parts = colC_Bulan.split(/\s+/);
                     let bulanLabelPanjang = colC_Bulan;
                     let idxBulanMulai = "2026-01";
@@ -517,15 +513,12 @@
                     let tglTerimaFinal = "-";
                     let uangRupiah = 0;
 
-                    // Mengakomodasi format desimal internasional (koma untuk ribuan, titik untuk pecahan desimal)
                     if (colE_Bayar) {
                         let stringUang = colE_Bayar.toString().trim();
-                        // Jika terdeteksi format internasional (ada koma diikuti angka ribuan dan titik desimal)
                         if (stringUang.includes(",") && stringUang.includes(".")) {
-                            stringUang = stringUang.replace(/,/g, ''); // Hapus koma pemisah ribuan
+                            stringUang = stringUang.replace(/,/g, ''); 
                             uangRupiah = parseFloat(stringUang) || 0;
                         } else {
-                            // Antisipasi fallback lokal Indonesia murni
                             let cleanNum = stringUang.replace(/\./g, '').replace(/,/g, '.');
                             uangRupiah = parseFloat(cleanNum) || 0;
                         }
