@@ -149,7 +149,7 @@
                             </label>
                             <button onclick="toggleDropdownKustom('menu-tahap1-warga')" id="btn-tahap1-warga" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium text-left flex justify-between items-center shadow-sm transition-all focus:ring-2 focus:ring-emerald-500">
                                 <span id="label-tahap1-warga">-- Pilih Kluster Terlebih Dahulu --</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/xl" class="h-3 w-3 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                             </button>
                             <div id="menu-tahap1-warga" class="hidden absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-20 dropdown-menu-kustom custom-scrollbar divide-y divide-gray-50">
                                 <!-- Diisi via JS -->
@@ -445,6 +445,7 @@
                 });
         }
 
+        // ==================== PENYEMPURNAAN MUTLAK: PARSER PENGHANCUR SPASI LIAR & KOMPATIBILITAS HURUFP / KOMA DESIMAL ====================
         function prosesTeksCSV(text) {
             try {
                 if(!text || text.trim().length === 0) return;
@@ -476,14 +477,19 @@
                     const rowData = lines[r];
                     if (!rowData || rowData.length < 3) continue;
 
-                    const colA_Kode  = rowData[0] ? rowData[0].trim() : "";
-                    const colB_Blok  = rowData[1] ? rowData[1].trim() : "";
-                    const colC_Bulan = rowData[2] ? rowData[2].trim() : "";
-                    const colD_Terima = rowData[3] ? rowData[3].trim() : "";
-                    const colE_Bayar  = rowData[4] ? rowData[4].trim() : "";
+                    // Cuci bersih semua teks kolom dari spasi liar di ujung-ujung sel (.trim())
+                    const colA_Kode  = rowData[0] ? rowData[0].toString().trim() : "";
+                    const colB_Blok  = rowData[1] ? rowData[1].toString().trim() : "";
+                    const colC_Bulan = rowData[2] ? rowData[2].toString().trim() : "";
+                    const colD_Terima = rowData[3] ? rowData[3].toString().trim() : "";
+                    const colE_Bayar  = rowData[4] ? rowData[4].toString().trim() : "";
 
                     if (!colA_Kode || !colC_Bulan) continue;
-                    if (colC_Bulan.toLowerCase().includes("faktur") || colA_Kode.toLowerCase().includes("no")) continue;
+                    
+                    // Proteksi ganda mengabaikan baris header teratas
+                    let bersihKode = colA_Kode.toLowerCase().replace(/[^a-z0-9]/g, "");
+                    let bersihBulan = colC_Bulan.toLowerCase().replace(/[^a-z0-9]/g, "");
+                    if (bersihBulan.includes("faktur") || bersihKode.includes("kode") || bersihKode === "no") continue;
 
                     if (!petaBlokWarga[colA_Kode]) {
                         petaBlokWarga[colA_Kode] = {
@@ -493,29 +499,39 @@
                         };
                     }
 
-                    const parts = colC_Bulan.split(" ");
+                    // Pemecah spasi dinamis yang menoleransi spasi ganda tak sengaja di Google Sheets
+                    const parts = colC_Bulan.split(/\s+/);
                     let bulanLabelPanjang = colC_Bulan;
                     let idxBulanMulai = "2026-01";
                     
                     if (parts.length >= 3) {
-                        const blnKecKecil = parts[1].toLowerCase();
+                        const blnKecKecil = parts[1].toLowerCase().trim();
                         const namaBulanReal = pemetaanBulanNama[blnKecKecil] || parts[1];
                         const angkaBulanReal = pemetaanBulanAngka[blnKecKecil] || "01";
                         
-                        bulanLabelPanjang = `${namaBulanReal} ${parts[2]}`;
-                        idxBulanMulai = `${parts[2]}-${angkaBulanReal}`; 
+                        bulanLabelPanjang = `${namaBulanReal} ${parts[2].trim()}`;
+                        idxBulanMulai = `${parts[2].trim()}-${angkaBulanReal}`; 
                     }
 
                     let statusLunas = false;
                     let tglTerimaFinal = "-";
                     let uangRupiah = 0;
 
+                    // Mengakomodasi format desimal internasional (koma untuk ribuan, titik untuk pecahan desimal)
                     if (colE_Bayar) {
-                        let cleanNum = colE_Bayar.toString().replace(/\./g, '').replace(/,/g, '.');
-                        uangRupiah = parseFloat(cleanNum) || 0;
+                        let stringUang = colE_Bayar.toString().trim();
+                        // Jika terdeteksi format internasional (ada koma diikuti angka ribuan dan titik desimal)
+                        if (stringUang.includes(",") && stringUang.includes(".")) {
+                            stringUang = stringUang.replace(/,/g, ''); // Hapus koma pemisah ribuan
+                            uangRupiah = parseFloat(stringUang) || 0;
+                        } else {
+                            // Antisipasi fallback lokal Indonesia murni
+                            let cleanNum = stringUang.replace(/\./g, '').replace(/,/g, '.');
+                            uangRupiah = parseFloat(cleanNum) || 0;
+                        }
                     }
 
-                    if (uangRupiah > 0 && colD_Terima !== "") {
+                    if (uangRupiah > 0 && colD_Terima !== "" && colD_Terima !== "-") {
                         statusLunas = true;
                         tglTerimaFinal = colD_Terima;
                     }
@@ -535,7 +551,9 @@
                     matangkanDatabaseKeUI();
                     document.getElementById('sync-badge-status').className = "text-[10px] text-green-700 font-bold bg-green-50 px-1.5 py-0.5 rounded inline-flex items-center gap-1";
                     document.getElementById('sync-badge-status').innerHTML = "<span class='h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse'></span> Terhubung";
-                    showToast(`Sukses memperbarui data ${databaseBlokMaster.length} unit warga.`);
+                    showToast(`Sukses memuat total ${databaseBlokMaster.length} data blok warga.`);
+                } else {
+                    throw new Error("Data array kosong.");
                 }
             } catch(e) {
                 console.error(e);
@@ -551,7 +569,6 @@
             document.getElementById('stat-total-warga').textContent = databaseBlokMaster.length;
         }
 
-        // ==================== PERBAIKAN TOTAL: INPUT VARIABEL ITEMDIV YANG FIX BERSIH ====================
         function initDropdownTahapKlusterKustom() {
             const menu = document.getElementById('menu-tahap1-warga');
             if(!menu) return;
@@ -560,16 +577,12 @@
             let setPrefix = new Set();
             databaseBlokMaster.forEach(item => {
                 if (item.id_kode && item.id_kode.length > 0) {
-                    // Mencegah tanda { bocor dengan memotong karakter pertama yang berupa huruf murni saja
-                    let hurufPertama = item.id_kode.trim().charAt(0).toUpperCase();
+                    let hurufPertama = item.id_kode.toString().trim().charAt(0).toUpperCase();
                     if(/[A-Z]/.test(hurufPertama)) {
                         setPrefix.add(hurufPertama);
                     }
                 }
             });
-            
-            // Jika kosong/error membaca string sheet, set otomatis cadangan kluster B
-            if (setPrefix.size === 0) setPrefix.add("B");
 
             Array.from(setPrefix).sort().forEach(prefix => {
                 const itemDiv = document.createElement('div');
@@ -600,7 +613,7 @@
             document.getElementById('label-tahap2-warga').textContent = "-- Pilih Nomor Blok Warga Di Sini --";
             menuTahap2.innerHTML = '';
             
-            const unitTersaring = databaseBlokMaster.filter(item => item.id_kode.toUpperCase().startsWith(prefixTerpilih.toUpperCase()));
+            const unitTersaring = databaseBlokMaster.filter(item => item.id_kode.toString().toUpperCase().startsWith(prefixTerpilih.toUpperCase()));
             unitTersaring.sort((a, b) => a.id_kode.localeCompare(b.id_kode));
             
             unitTersaring.forEach(item => {
@@ -624,14 +637,12 @@
             let setPrefix = new Set();
             databaseBlokMaster.forEach(item => {
                 if (item.id_kode && item.id_kode.length > 0) {
-                    let hurufPertama = item.id_kode.trim().charAt(0).toUpperCase();
+                    let hurufPertama = item.id_kode.toString().trim().charAt(0).toUpperCase();
                     if(/[A-Z]/.test(hurufPertama)) {
                         setPrefix.add(hurufPertama);
                     }
                 }
             });
-            
-            if (setPrefix.size === 0) setPrefix.add("B");
 
             Array.from(setPrefix).sort().forEach(prefix => {
                 const rowItem = document.createElement('div');
@@ -789,7 +800,7 @@
             headerHtml += `<th class="py-2 px-0.5 bg-emerald-50 text-emerald-800 font-black">Total</th></tr>`;
             thead.innerHTML = headerHtml;
 
-            const filteredUnits = databaseBlokMaster.filter(item => item.id_kode.toUpperCase().startsWith(prefix));
+            const filteredUnits = databaseBlokMaster.filter(item => item.id_kode.toString().toUpperCase().startsWith(prefix));
             filteredUnits.sort((a, b) => a.id_kode.localeCompare(b.id_kode));
 
             filteredUnits.forEach(unit => {
@@ -822,7 +833,7 @@
                 return;
             }
 
-            const filteredUnits = databaseBlokMaster.filter(item => item.id_kode.toUpperCase().startsWith(prefix));
+            const filteredUnits = databaseBlokMaster.filter(item => item.id_kode.toString().toUpperCase().startsWith(prefix));
             filteredUnits.sort((a, b) => a.id_kode.localeCompare(b.id_kode));
 
             if (filteredUnits.length === 0) {
