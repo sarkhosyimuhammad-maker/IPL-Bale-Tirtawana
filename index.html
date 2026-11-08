@@ -6,6 +6,7 @@
     <title>IPL Digital Realtime - Bale Tirtawana</title>
     
     <script>
+        // MASUKKAN LINK CSV GOOGLE SHEETS ANDA PERMANEN DI SINI
         const DEFAULT_SHEETS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT2t-ise09YDP7oo9IkOW-tDO2CHVKiRbm7zDPyO7USWUgY2q380DqKWs1xZW_mJA/pub?output=csv"; 
     </script>
 
@@ -38,7 +39,6 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
-        /* Style tambahan untuk animasi dropdown kustom */
         .dropdown-menu-kustom {
             max-height: 240px;
             overflow-y: auto;
@@ -105,7 +105,7 @@
                 </div>
             </div>
 
-            <!-- 1. PANEL UTAMA: PILIH KLUSTER (KUSTOM DROP DOWN ANTI-MENUMPUK HP) -->
+            <!-- 1. PANEL UTAMA: PILIH KLUSTER -->
             <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div class="max-w-md relative">
                     <h3 class="text-xs font-black text-gray-700 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
@@ -128,7 +128,7 @@
                 </div>
             </div>
 
-            <!-- 2. PANEL BERBENTUK CASCADING: FILTER TAHAP BLOK WARGA (KUSTOM DROP DOWN) -->
+            <!-- 2. PANEL BERBENTUK CASCADING: FILTER TAHAP BLOK WARGA -->
             <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div class="max-w-md">
                     <h3 class="text-xs font-black text-gray-700 mb-3 flex items-center gap-1 uppercase tracking-wider">
@@ -363,7 +363,6 @@
                 ambilDataDariGoogleSheets(savedUrl);
             }
 
-            // Fungsi global untuk menutup dropdown kustom ketika mengklik di luar area menu
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.relative')) {
                     tutupSemuaDropdownKustom();
@@ -552,7 +551,7 @@
             document.getElementById('stat-total-warga').textContent = databaseBlokMaster.length;
         }
 
-        // 1. Inisialisasi Kustom Dropdown Tahap 1 (Pencarian Kluster Warga Rapat HP) - PERBAIKAN FIXED VARIABLE ERROR
+        // ==================== PERBAIKAN TOTAL: INPUT VARIABEL ITEMDIV YANG FIX BERSIH ====================
         function initDropdownTahapKlusterKustom() {
             const menu = document.getElementById('menu-tahap1-warga');
             if(!menu) return;
@@ -561,10 +560,17 @@
             let setPrefix = new Set();
             databaseBlokMaster.forEach(item => {
                 if (item.id_kode && item.id_kode.length > 0) {
-                    setPrefix.add(item.id_kode.charAt(0).toUpperCase());
+                    // Mencegah tanda { bocor dengan memotong karakter pertama yang berupa huruf murni saja
+                    let hurufPertama = item.id_kode.trim().charAt(0).toUpperCase();
+                    if(/[A-Z]/.test(hurufPertama)) {
+                        setPrefix.add(hurufPertama);
+                    }
                 }
             });
             
+            // Jika kosong/error membaca string sheet, set otomatis cadangan kluster B
+            if (setPrefix.size === 0) setPrefix.add("B");
+
             Array.from(setPrefix).sort().forEach(prefix => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = "px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 cursor-pointer transition-colors";
@@ -577,7 +583,6 @@
                 menu.appendChild(itemDiv);
             });
             
-            // Kunci tombol dropdown tahap 2 kustom
             const btnTahap2 = document.getElementById('btn-tahap2-warga');
             btnTahap2.disabled = true;
             btnTahap2.className = "w-full bg-gray-100 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium text-left flex justify-between items-center shadow-sm text-gray-400 cursor-not-allowed";
@@ -585,7 +590,6 @@
             document.getElementById('menu-tahap2-warga').innerHTML = '';
         }
 
-        // 2. Fungsi Filter Kustom Tahap 2 (Membuat Baris Pilihan Sangat Rapat Bebas Menumpuk)
         function filterDropdownNomorBlokWargaKustom(prefixTerpilih) {
             klusterTerpilihCascading = prefixTerpilih;
             const btnTahap2 = document.getElementById('btn-tahap2-warga');
@@ -601,10 +605,10 @@
             
             unitTersaring.forEach(item => {
                 const rowItem = document.createElement('div');
-                // Menggunakan utility padding py-1.5 dan text-xs rapat khusus HP agar bebas bertumpuk
                 rowItem.className = "px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-emerald-50 hover:text-emerald-800 cursor-pointer transition-colors truncate";
                 rowItem.textContent = `${item.id_kode} - ${item.nama_blok}`;
                 rowItem.onclick = function() {
+                    document.getElementById('label-tahap2-warga').textContent = `${item.id_kode} - ${item.nama_blok}`;
                     menuTahap2.classList.add('hidden');
                     bukaModalDetail(item);
                 };
@@ -612,7 +616,6 @@
             });
         }
 
-        // 3. Inisialisasi Kustom Dropdown Menu Kluster Pak RT
         function initDropdownKlusterRTKustom() {
             const menu = document.getElementById('menu-kluster-rt');
             if(!menu) return;
@@ -621,15 +624,21 @@
             let setPrefix = new Set();
             databaseBlokMaster.forEach(item => {
                 if (item.id_kode && item.id_kode.length > 0) {
-                    setPrefix.add(item.id_kode.charAt(0).toUpperCase());
+                    let hurufPertama = item.id_kode.trim().charAt(0).toUpperCase();
+                    if(/[A-Z]/.test(hurufPertama)) {
+                        setPrefix.add(hurufPertama);
+                    }
                 }
             });
             
+            if (setPrefix.size === 0) setPrefix.add("B");
+
             Array.from(setPrefix).sort().forEach(prefix => {
                 const rowItem = document.createElement('div');
                 rowItem.className = "px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-teal-50 hover:text-teal-800 cursor-pointer transition-colors";
                 rowItem.textContent = `Kluster Blok / Prefix "${prefix}"`;
                 rowItem.onclick = function() {
+                    document.getElementById('label-kluster-rt').textContent = `Kluster Blok / Prefix "${prefix}"`;
                     menu.classList.add('hidden');
                     bukaLaporanKlusterCerdas(prefix);
                 };
