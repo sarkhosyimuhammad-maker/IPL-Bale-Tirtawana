@@ -6,7 +6,7 @@
     <title>IPL Digital Realtime - Bale Tirtawana</title>
     
     <script>
-        const DEFAULT_SHEETS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT2t-ise09YdP7oo9IkOW-tDO2CHVKIrbM7zDPyO7USWUgY2q380DqKWslxZW_mJA/pub?output=csv"; 
+        const DEFAULT_SHEETS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT2t-ise09YDP7oo9IkOW-tDO2CHVKiRbm7zDPyO7USWUgY2q380DqKWs1xZW_mJA/pub?output=csv"; 
     </script>
 
     <!-- Tailwind CSS untuk Desain Modern & Responsif -->
@@ -552,7 +552,7 @@
             document.getElementById('stat-total-warga').textContent = databaseBlokMaster.length;
         }
 
-        // 1. Inisialisasi Kustom Dropdown Tahap 1 (Pencarian Kluster Warga Rapat HP)
+        // 1. Inisialisasi Kustom Dropdown Tahap 1 (Pencarian Kluster Warga Rapat HP) - PERBAIKAN FIXED VARIABLE ERROR
         function initDropdownTahapKlusterKustom() {
             const menu = document.getElementById('menu-tahap1-warga');
             if(!menu) return;
@@ -571,11 +571,9 @@
                 itemDiv.textContent = `Kluster ${prefix}`;
                 itemDiv.onclick = function() {
                     document.getElementById('label-tahap1-warga').textContent = `Kluster ${prefix}`;
-                    document.getElementById('label-tahap1-warga').className = "text-xs font-bold text-emerald-800";
                     menu.classList.add('hidden');
                     filterDropdownNomorBlokWargaKustom(prefix);
                 };
-                menu.appendChild(opt);
                 menu.appendChild(itemDiv);
             });
             
