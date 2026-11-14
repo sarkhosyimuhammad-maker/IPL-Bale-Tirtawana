@@ -181,6 +181,55 @@
         </section>
         
         <section id="section-admin" class="hidden"></section>
+        <!-- ==================== JADWAL PENGANGKUTAN SAMPAH ==================== -->
+<section id="section-sampah" class="mt-4">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <button onclick="toggleJadwalSampah()" class="w-full px-4 py-3 flex justify-between items-center text-left hover:bg-gray-50 transition-colors">
+      <span class="text-xs font-black text-gray-700 uppercase tracking-wider">🗑️ Jadwal Pengangkutan Sampah</span>
+      <svg id="ikon-jadwal-sampah" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-400 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+      </svg>
+    </button>
+    <div id="isi-jadwal-sampah" class="hidden border-t border-gray-100 p-3 space-y-2"></div>
+  </div>
+</section>
+
+<script>
+// EDIT JADWAL DI SINI. hari: 1=Senin, 2=Selasa, 3=Rabu, 4=Kamis, 5=Jumat, 6=Sabtu, 0=Minggu
+const JADWAL_SAMPAH = [
+  { hari: 1, nama: "Senin",  jenis: "Sampah rumah tangga", jam: "07.00 - 10.00 WIB" },
+  { hari: 4, nama: "Kamis",  jenis: "Sampah rumah tangga", jam: "07.00 - 10.00 WIB" }
+];
+const CATATAN_SAMPAH = "Mohon sampah dikeluarkan sebelum jam pengangkutan.";
+
+function toggleJadwalSampah() {
+  document.getElementById('isi-jadwal-sampah').classList.toggle('hidden');
+  document.getElementById('ikon-jadwal-sampah').classList.toggle('rotate-180');
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  const hariIni = new Date().getDay();
+  const wadah = document.getElementById('isi-jadwal-sampah');
+  let html = '';
+  JADWAL_SAMPAH.forEach(j => {
+    const aktif = j.hari === hariIni;
+    html += `
+      <div class="flex items-center justify-between rounded-lg px-3 py-2 border ${aktif ? 'bg-emerald-50 border-emerald-300' : 'bg-gray-50 border-gray-100'}">
+        <div>
+          <p class="text-xs font-bold text-gray-800">${j.nama}
+            ${aktif ? '<span class="ml-1 bg-emerald-600 text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded">HARI INI</span>' : ''}
+          </p>
+          <p class="text-[10px] text-gray-500">${j.jenis}</p>
+        </div>
+        <p class="text-[11px] font-mono font-bold text-emerald-700">${j.jam}</p>
+      </div>`;
+  });
+  if (CATATAN_SAMPAH) {
+    html += `<p class="text-[10px] text-gray-400 pt-1">${CATATAN_SAMPAH}</p>`;
+  }
+  wadah.innerHTML = html;
+});
+</script>
     </main>
 
     <!-- ==================== MODAL 1: DETAIL INDIVIDU WARGA ==================== -->
