@@ -181,7 +181,7 @@
         </section>
         
         <section id="section-admin" class="hidden"></section>
-      <!-- ==================== JADWAL PENGANGKUTAN SAMPAH ==================== -->
+   <!-- ==================== JADWAL PENGANGKUTAN SAMPAH ==================== -->
 <section id="section-sampah" class="mt-4">
   <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <button onclick="toggleJadwalSampah()" class="w-full px-4 py-3 flex justify-between items-center text-left hover:bg-gray-50 transition-colors">
@@ -213,12 +213,13 @@ const JADWAL_SAMPAH = {
   "E":    { 1: "10.00 - 12.00", 4: "10.00 - 12.00" },
   "F":    { 2: "10.00 - 12.00", 5: "10.00 - 12.00" },
   "G":    { 3: "10.00 - 12.00", 6: "10.00 - 12.00" },
-  "R":    { 1: "13.00 - 15.00", 4: "13.00 - 15.00" },
+  "R":    { 1: "13.00 - 15.00", 4: "13.00 - 15.00" }
+};
 const CATATAN_SAMPAH = "Mohon sampah dikeluarkan sebelum jam pengangkutan.";
 // ===============================
 
-const NAMA_HARI_SAMPAH = { 1: "Senin", 2: "Selasa", 3: "Rabu", 4: "Kamis", 5: "Jumat", 6: "Sabtu" : "Minggu" };
-const URUTAN_HARI_SAMPAH = [1, 2, 3, 4, 5, 6];
+const NAMA_HARI_SAMPAH = { 1: "Senin", 2: "Selasa", 3: "Rabu", 4: "Kamis", 5: "Jumat", 6: "Sabtu", 0: "Minggu" };
+const URUTAN_HARI_SAMPAH = [1, 2, 3, 4, 5, 6, 0];
 let blokSampahDipilih = "";
 
 function toggleJadwalSampah() {
@@ -232,7 +233,7 @@ function renderPilihanBlokSampah() {
   Object.keys(JADWAL_SAMPAH).forEach(kode => {
     const aktif = kode === blokSampahDipilih;
     const tombol = document.createElement('button');
-    tombol.textContent = kode.length === 1 ? 'Blok ' + kode : kode;
+    tombol.textContent = kode === 'R' ? 'Blok R (Ruko)' : 'Blok ' + kode;
     tombol.className = 'px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors ' +
       (aktif ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-emerald-50');
     tombol.onclick = function () { pilihBlokSampah(kode); };
