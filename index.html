@@ -181,92 +181,41 @@
         </section>
         
         <section id="section-admin" class="hidden"></section>
-        <!-- ==================== JADWAL PENGANGKUTAN SAMPAH ==================== -->
+        <!-- ==================== PENGUMUMAN JADWAL ANGKUT SAMPAH ==================== -->
 <section id="section-sampah" class="mt-4">
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <button onclick="toggleJadwalSampah()" class="w-full px-4 py-3 flex justify-between items-center text-left hover:bg-gray-50 transition-colors">
-      <span class="text-xs font-black text-gray-700 uppercase tracking-wider">🗑️ Jadwal Pengangkutan Sampah</span>
-      <svg id="ikon-jadwal-sampah" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-400 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+  <details class="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <summary class="list-none cursor-pointer px-4 py-3 flex justify-between items-center hover:bg-gray-50 transition-colors [&::-webkit-details-marker]:hidden">
+      <span class="text-xs font-black text-gray-700 uppercase tracking-wider">📢 Jadwal Angkut Sampah</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-400 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
       </svg>
-    </button>
-    <div id="isi-jadwal-sampah" class="hidden border-t border-gray-100 p-3">
-      <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Pilih Blok</p>
-      <div id="pilihan-blok-sampah" class="flex flex-wrap gap-1.5 mb-3"></div>
-      <div id="hasil-jadwal-sampah" class="space-y-1.5">
-        <p class="text-[11px] text-gray-400">Silakan pilih blok di atas untuk melihat jadwalnya.</p>
+    </summary>
+
+    <div class="border-t border-gray-100 p-4 text-xs text-gray-700 space-y-3 leading-relaxed">
+      <div>
+        <p class="font-black text-emerald-700 text-sm">📢 JADWAL ANGKUT SAMPAH</p>
+        <p class="text-gray-500">Perumahan Bale Tirtawana</p>
       </div>
-      <p id="catatan-jadwal-sampah" class="text-[10px] text-gray-400 pt-2"></p>
+
+      <p>⏰ <b>Jam: 10.00 – 12.00 WIB</b><br>
+        <span class="text-gray-500">(Keluarkan sampah sebelum jam 10.00)</span></p>
+
+      <div>
+        <p class="font-bold">📅 Jadwal Rutin:</p>
+        <ul class="list-disc pl-5 mt-1 space-y-1">
+          <li><b>Senin, Rabu, Jumat:</b> Rumah Blok B &amp; Ruko RB – RC 2</li>
+          <li><b>Selasa, Kamis, Sabtu:</b> Rumah Blok C – G &amp; Ruko RC 1</li>
+        </ul>
+      </div>
+
+      <p class="bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-3 py-2">
+        ⚠️ <b>Minggu:</b> Libur sampah rumah tangga. Khusus jasa angkut puing/ranting/pohon (biaya terpisah).
+      </p>
+
+      <p class="text-center font-semibold text-emerald-700">Mari jaga kebersihan lingkungan bersama! 🙏</p>
     </div>
-  </div>
+  </details>
 </section>
-
-<script>
-// ===== EDIT JADWAL DI SINI =====
-// Angka hari: 1=Senin, 2=Selasa, 3=Rabu, 4=Kamis, 5=Jumat, 6=Sabtu, 0=Minggu
-// Hari yang tidak ditulis otomatis tampil "Tidak ada pengangkutan".
-// (Isi di bawah hanya CONTOH, silakan ganti sesuai jadwal sebenarnya)
-const JADWAL_SAMPAH = {
-  "B":    { 1: "07.00 - 10.00", 4: "07.00 - 10.00" },
-  "C":    { 2: "07.00 - 10.00", 5: "07.00 - 10.00" },
-  "D":    { 3: "07.00 - 10.00", 6: "07.00 - 10.00" },
-  "E":    { 1: "10.00 - 12.00", 4: "10.00 - 12.00" },
-  "F":    { 2: "10.00 - 12.00", 5: "10.00 - 12.00" },
-  "G":    { 3: "10.00 - 12.00", 6: "10.00 - 12.00" },
-  "R":    { 1: "13.00 - 15.00", 4: "13.00 - 15.00" }
-};
-const CATATAN_SAMPAH = "Mohon sampah dikeluarkan sebelum jam pengangkutan.";
-// ===============================
-
-const NAMA_HARI_SAMPAH = { 1: "Senin", 2: "Selasa", 3: "Rabu", 4: "Kamis", 5: "Jumat", 6: "Sabtu", 0: "Minggu" };
-const URUTAN_HARI_SAMPAH = [1, 2, 3, 4, 5, 6, 0];
-let blokSampahDipilih = "";
-
-function toggleJadwalSampah() {
-  document.getElementById('isi-jadwal-sampah').classList.toggle('hidden');
-  document.getElementById('ikon-jadwal-sampah').classList.toggle('rotate-180');
-}
-
-function renderPilihanBlokSampah() {
-  const wadah = document.getElementById('pilihan-blok-sampah');
-  wadah.innerHTML = '';
-  Object.keys(JADWAL_SAMPAH).forEach(kode => {
-    const aktif = kode === blokSampahDipilih;
-    const tombol = document.createElement('button');
-    tombol.textContent = kode === 'R' ? 'Blok R (Ruko)' : 'Blok ' + kode;
-    tombol.className = 'px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors ' +
-      (aktif ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-emerald-50');
-    tombol.onclick = function () { pilihBlokSampah(kode); };
-    wadah.appendChild(tombol);
-  });
-}
-
-function pilihBlokSampah(kode) {
-  blokSampahDipilih = kode;
-  renderPilihanBlokSampah();
-  const hariIni = new Date().getDay();
-  const dataBlok = JADWAL_SAMPAH[kode] || {};
-  let html = '';
-  URUTAN_HARI_SAMPAH.forEach(h => {
-    const jam = dataBlok[h];
-    const adaJadwal = !!jam;
-    const hariIniAktif = h === hariIni;
-    html += `
-      <div class="flex items-center justify-between rounded-lg px-3 py-2 border ${hariIniAktif ? 'border-emerald-300 bg-emerald-50' : 'border-gray-100 bg-gray-50'}">
-        <p class="text-xs font-bold ${adaJadwal ? 'text-gray-800' : 'text-gray-400'}">${NAMA_HARI_SAMPAH[h]}
-          ${hariIniAktif ? '<span class="ml-1 bg-emerald-600 text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded">HARI INI</span>' : ''}
-        </p>
-        ${adaJadwal
-          ? `<p class="text-[11px] font-mono font-bold text-emerald-700">${jam} WIB</p>`
-          : `<p class="text-[10px] text-gray-400">Tidak ada pengangkutan</p>`}
-      </div>`;
-  });
-  document.getElementById('hasil-jadwal-sampah').innerHTML = html;
-  document.getElementById('catatan-jadwal-sampah').textContent = CATATAN_SAMPAH;
-}
-
-document.addEventListener('DOMContentLoaded', renderPilihanBlokSampah);
-</script>
     </main>
 
     <!-- ==================== MODAL 1: DETAIL INDIVIDU WARGA ==================== -->
